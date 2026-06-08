@@ -14,6 +14,7 @@ import {
 
 import { signOut } from "@/lib/auth-client";
 import { LogoMark } from "@/components/logo";
+import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -23,7 +24,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -96,8 +96,8 @@ export function AppShell({
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
                 <Link href={root}>
-                  <LogoMark className="size-8" />
-                  <div className="flex flex-col gap-0.5 leading-none">
+                  <LogoMark className="size-8 shrink-0" />
+                  <div className="flex flex-col gap-0.5 leading-none group-data-[collapsible=icon]:hidden">
                     <span className="font-semibold">PawthCare</span>
                     <span className="text-xs text-muted-foreground">
                       {portal === "clinic" ? "Clinic" : "Pet owner"}
@@ -182,9 +182,9 @@ export function AppShell({
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <header className="flex h-12 shrink-0 items-center gap-3 border-b px-4">
           <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-1 h-4" />
+          <Separator orientation="vertical" className="h-full" />
           <span className="font-medium">{activeLabel}</span>
         </header>
         <div className="p-4 md:p-8">

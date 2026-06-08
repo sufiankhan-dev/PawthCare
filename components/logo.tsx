@@ -6,7 +6,7 @@ export function LogoMark({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "relative flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg bg-[#07120f]",
+        "relative flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg bg-white ring-1 ring-black/5",
         className,
       )}
     >
