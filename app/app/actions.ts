@@ -96,6 +96,7 @@ export async function bookAppointmentAction(formData: FormData) {
     vetId: str(formData.get("vetId")),
     scheduledAt: new Date(when),
     reason: str(formData.get("reason")),
+    sharedAnalysisId: str(formData.get("sharedAnalysisId")),
   });
   revalidatePath("/app/appointments");
   revalidatePath("/app");

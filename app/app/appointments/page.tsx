@@ -1,4 +1,4 @@
-import { Calendar } from "lucide-react";
+import { Calendar, Sparkles } from "lucide-react";
 
 import { BookAppointmentDialog } from "@/components/owner/book-appointment-dialog";
 import { PageHeader } from "@/components/page-header";
@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { formatDateTime } from "@/lib/format";
 import {
   getAppointmentsByOwner,
+  getLatestAnalysesByOwner,
   getPetsByOwner,
   getVetListings,
 } from "@/lib/queries";
@@ -14,10 +15,11 @@ import { requireOwner } from "@/lib/session";
 
 export default async function AppointmentsPage() {
   const user = await requireOwner();
-  const [pets, appointments, vets] = await Promise.all([
+  const [pets, appointments, vets, analyses] = await Promise.all([
     getPetsByOwner(user.id),
     getAppointmentsByOwner(user.id),
     getVetListings(),
+    getLatestAnalysesByOwner(user.id),
   ]);
 
   const now = new Date();
@@ -31,7 +33,9 @@ export default async function AppointmentsPage() {
       <PageHeader
         title="Appointments"
         description="Schedule and track your vet visits."
-        action={<BookAppointmentDialog pets={pets} vets={vets} />}
+        action={
+          <BookAppointmentDialog pets={pets} vets={vets} analyses={analyses} />
+        }
       />
 
       <Section title="Upcoming" items={upcoming} emptyText="No upcoming appointments." />
@@ -78,6 +82,12 @@ function Section({
                     {a.vetName ? ` · with ${a.vetName}` : ""}
                   </p>
                 </div>
+                {a.sharedAnalysisId ? (
+                  <Badge variant="secondary" className="gap-1">
+                    <Sparkles className="size-3" />
+                    Screening shared
+                  </Badge>
+                ) : null}
                 <Badge variant={muted ? "secondary" : "outline"}>
                   {a.status}
                 </Badge>

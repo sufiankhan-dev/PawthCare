@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { CalendarPlus, CalendarIcon } from "lucide-react";
 
 import { bookAppointmentAction } from "@/app/app/actions";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -27,8 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { riskTone, URGENCY_META } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import type { Pet, VetListing } from "@/lib/types";
+import type { AiAnalysis, Pet, VetListing } from "@/lib/types";
 
 function pad(n: number) {
   return n.toString().padStart(2, "0");
@@ -50,9 +52,11 @@ function toLocalDateString(date: Date) {
 export function BookAppointmentDialog({
   pets,
   vets,
+  analyses = [],
 }: {
   pets: Pet[];
   vets: VetListing[];
+  analyses?: AiAnalysis[];
 }) {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -62,15 +66,20 @@ export function BookAppointmentDialog({
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [time, setTime] = useState<string>("09:00");
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [shareScreening, setShareScreening] = useState(true);
 
+  const screening = analyses.find((a) => a.petId === petId);
   const scheduledAt = date ? `${toLocalDateString(date)}T${time}` : "";
   const canSubmit = Boolean(petId && vetId && scheduledAt);
+  const sharedAnalysisId =
+    screening && shareScreening ? screening.id : "";
 
   function resetForm() {
     setPetId(pets[0]?.id ?? "");
     setVetId("");
     setDate(undefined);
     setTime("09:00");
+    setShareScreening(true);
   }
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -106,6 +115,11 @@ export function BookAppointmentDialog({
           <input type="hidden" name="petId" value={petId} />
           <input type="hidden" name="vetId" value={vetId} />
           <input type="hidden" name="scheduledAt" value={scheduledAt} />
+          <input
+            type="hidden"
+            name="sharedAnalysisId"
+            value={sharedAnalysisId}
+          />
 
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="pet-select">Pet</Label>
@@ -186,6 +200,53 @@ export function BookAppointmentDialog({
             <Label htmlFor="reason">Reason</Label>
             <Input id="reason" name="reason" placeholder="e.g. Annual checkup" />
           </div>
+
+          {screening ? (
+            <label
+              htmlFor="shareScreening"
+              className={cn(
+                "flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-left transition-colors",
+                shareScreening
+                  ? "border-primary/40 bg-primary/5"
+                  : "border-input hover:bg-muted/40",
+              )}
+            >
+              <input
+                id="shareScreening"
+                type="checkbox"
+                className="mt-0.5 size-4 accent-primary"
+                checked={shareScreening}
+                onChange={(e) => setShareScreening(e.target.checked)}
+              />
+              <span className="flex flex-col gap-1">
+                <span className="text-sm font-medium">
+                  Share latest AI screening with the vet
+                </span>
+                <span className="flex flex-wrap items-center gap-1.5">
+                  <Badge variant={riskTone(screening.riskScore).badge}>
+                    {riskTone(screening.riskScore).label} risk
+                  </Badge>
+                  <Badge
+                    variant={
+                      (URGENCY_META[screening.urgency] ?? URGENCY_META.routine)
+                        .badge
+                    }
+                  >
+                    {
+                      (URGENCY_META[screening.urgency] ?? URGENCY_META.routine)
+                        .label
+                    }
+                  </Badge>
+                </span>
+                {screening.summary ? (
+                  <span className="line-clamp-2 text-xs text-muted-foreground">
+                    {screening.summary}
+                  </span>
+                ) : null}
+              </span>
+            </label>
+          ) : null}
+
           <Button type="submit" disabled={pending || !canSubmit}>
             {pending ? "Booking..." : "Book"}
           </Button>

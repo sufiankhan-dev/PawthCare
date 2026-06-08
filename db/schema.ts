@@ -191,6 +191,8 @@ export const appointment = pgTable("appointment", {
   scheduledAt: timestamp("scheduled_at").notNull(),
   reason: text("reason"),
   status: text("status").notNull().default("scheduled"),
+  // Optional AI screening the owner chose to share with the vet for this visit.
+  sharedAnalysisId: uuid("shared_analysis_id"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

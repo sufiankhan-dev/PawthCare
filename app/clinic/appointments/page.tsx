@@ -1,6 +1,7 @@
 import { Calendar } from "lucide-react";
 
 import { ScheduleAppointmentDialog } from "@/components/clinic/schedule-appointment-dialog";
+import { ViewScreeningDialog } from "@/components/clinic/view-screening-dialog";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,6 +15,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDateTime } from "@/lib/format";
 import {
+  getAnalysesByIds,
   getAppointmentsByClinic,
   getPatientsByClinic,
 } from "@/lib/queries";
@@ -26,6 +28,12 @@ export default async function ClinicAppointmentsPage() {
     getPatientsByClinic(clinicId),
     getAppointmentsByClinic(clinicId),
   ]);
+
+  const sharedIds = appointments
+    .map((a) => a.sharedAnalysisId)
+    .filter((id): id is string => !!id);
+  const sharedAnalyses = await getAnalysesByIds(sharedIds);
+  const analysisById = new Map(sharedAnalyses.map((a) => [a.id, a]));
 
   return (
     <>
@@ -50,20 +58,38 @@ export default async function ClinicAppointmentsPage() {
                   <TableHead>Patient</TableHead>
                   <TableHead>Reason</TableHead>
                   <TableHead>When</TableHead>
+                  <TableHead>Screening</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {appointments.map((a) => (
-                  <TableRow key={a.id}>
-                    <TableCell className="font-medium">{a.petName}</TableCell>
-                    <TableCell>{a.reason || "—"}</TableCell>
-                    <TableCell>{formatDateTime(a.scheduledAt)}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{a.status}</Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {appointments.map((a) => {
+                  const analysis = a.sharedAnalysisId
+                    ? analysisById.get(a.sharedAnalysisId)
+                    : undefined;
+                  return (
+                    <TableRow key={a.id}>
+                      <TableCell className="font-medium">{a.petName}</TableCell>
+                      <TableCell>{a.reason || "—"}</TableCell>
+                      <TableCell>{formatDateTime(a.scheduledAt)}</TableCell>
+                      <TableCell>
+                        {analysis ? (
+                          <ViewScreeningDialog
+                            petName={a.petName}
+                            analysis={analysis}
+                          />
+                        ) : (
+                          <span className="text-sm text-muted-foreground">
+                            —
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{a.status}</Badge>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </CardContent>

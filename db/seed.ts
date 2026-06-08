@@ -201,10 +201,19 @@ async function ensureUser(input: {
   return created[0].id;
 }
 
+async function ensureAppointmentColumns() {
+  // Idempotent: add the shared-screening column if an older DB predates it.
+  await db.execute(sql`
+    ALTER TABLE appointment
+    ADD COLUMN IF NOT EXISTS shared_analysis_id uuid
+  `);
+}
+
 async function main() {
   console.log("Seeding PawthCare demo data...");
 
   await ensureVetListings();
+  await ensureAppointmentColumns();
 
   const clinic = await getOrCreateDefaultClinic();
 

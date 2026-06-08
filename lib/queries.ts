@@ -191,6 +191,7 @@ export async function getAppointmentsByOwner(
       scheduledAt: appointment.scheduledAt,
       reason: appointment.reason,
       status: appointment.status,
+      sharedAnalysisId: appointment.sharedAnalysisId,
       createdAt: appointment.createdAt,
       petName: pet.name,
     })
@@ -213,6 +214,7 @@ export async function getAppointmentsByClinic(
       scheduledAt: appointment.scheduledAt,
       reason: appointment.reason,
       status: appointment.status,
+      sharedAnalysisId: appointment.sharedAnalysisId,
       createdAt: appointment.createdAt,
       petName: pet.name,
     })
@@ -228,6 +230,7 @@ export async function createAppointment(input: {
   vetId?: string | null;
   scheduledAt: Date;
   reason: string | null;
+  sharedAnalysisId?: string | null;
 }): Promise<void> {
   await db.insert(appointment).values({ ...input, status: "scheduled" });
 }
@@ -315,6 +318,46 @@ export async function getAnalyses(petId: string): Promise<AiAnalysis[]> {
     .where(eq(aiAnalysis.petId, petId))
     .orderBy(desc(aiAnalysis.createdAt));
   return rows as unknown as AiAnalysis[];
+}
+
+export async function getAnalysisById(
+  id: string,
+): Promise<AiAnalysis | null> {
+  const rows = await db
+    .select()
+    .from(aiAnalysis)
+    .where(eq(aiAnalysis.id, id))
+    .limit(1);
+  return (rows[0] as unknown as AiAnalysis) ?? null;
+}
+
+export async function getAnalysesByIds(ids: string[]): Promise<AiAnalysis[]> {
+  if (ids.length === 0) return [];
+  const rows = await db
+    .select()
+    .from(aiAnalysis)
+    .where(inArray(aiAnalysis.id, ids));
+  return rows as unknown as AiAnalysis[];
+}
+
+// Latest analysis per pet for a given owner (used when booking to share screening).
+export async function getLatestAnalysesByOwner(
+  ownerId: string,
+): Promise<AiAnalysis[]> {
+  const rows = await db
+    .select({ a: aiAnalysis })
+    .from(aiAnalysis)
+    .innerJoin(pet, eq(pet.id, aiAnalysis.petId))
+    .where(eq(pet.ownerId, ownerId))
+    .orderBy(desc(aiAnalysis.createdAt));
+
+  const latestByPet = new Map<string, AiAnalysis>();
+  for (const { a } of rows) {
+    if (!latestByPet.has(a.petId)) {
+      latestByPet.set(a.petId, a as unknown as AiAnalysis);
+    }
+  }
+  return [...latestByPet.values()];
 }
 
 export async function saveAnalysis(input: {
