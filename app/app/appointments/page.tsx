@@ -13,8 +13,13 @@ import {
 } from "@/lib/queries";
 import { requireOwner } from "@/lib/session";
 
-export default async function AppointmentsPage() {
+export default async function AppointmentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ vetId?: string }>;
+}) {
   const user = await requireOwner();
+  const { vetId } = await searchParams;
   const [pets, appointments, vets, analyses] = await Promise.all([
     getPetsByOwner(user.id),
     getAppointmentsByOwner(user.id),
@@ -34,7 +39,12 @@ export default async function AppointmentsPage() {
         title="Appointments"
         description="Schedule and track your vet visits."
         action={
-          <BookAppointmentDialog pets={pets} vets={vets} analyses={analyses} />
+          <BookAppointmentDialog
+            pets={pets}
+            vets={vets}
+            analyses={analyses}
+            initialVetId={vetId}
+          />
         }
       />
 

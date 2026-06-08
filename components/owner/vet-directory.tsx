@@ -1,12 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   BadgeCheck,
+  CalendarPlus,
   Clock,
-  Mail,
-  MapPin,
-  Phone,
   Search,
   Star,
   Stethoscope,
@@ -116,45 +115,20 @@ function VetCard({ vet }: { vet: VetListing }) {
           </Badge>
         </div>
 
-        <div className="space-y-1.5 text-sm text-muted-foreground">
-          {vet.address && (
-            <p className="flex items-center gap-2">
-              <MapPin className="size-4 shrink-0 text-primary" />
-              {vet.address}
-              {vet.city ? `, ${vet.city}` : ""}
-            </p>
-          )}
-          {vet.hours && (
-            <p className="flex items-center gap-2">
-              <Clock className="size-4 shrink-0 text-primary" />
-              {vet.hours}
-            </p>
-          )}
-          {vet.phone && (
-            <p className="flex items-center gap-2">
-              <Phone className="size-4 shrink-0 text-primary" />
-              {vet.phone}
-            </p>
-          )}
-        </div>
+        {vet.hours && (
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Clock className="size-4 shrink-0 text-primary" />
+            {vet.hours}
+          </p>
+        )}
 
-        <div className="mt-auto flex gap-2 pt-2">
-          {vet.phone && (
-            <Button asChild size="sm" className="flex-1">
-              <a href={`tel:${vet.phone}`}>
-                <Phone className="size-4" />
-                Call
-              </a>
-            </Button>
-          )}
-          {vet.email && (
-            <Button asChild size="sm" variant="outline" className="flex-1">
-              <a href={`mailto:${vet.email}`}>
-                <Mail className="size-4" />
-                Email
-              </a>
-            </Button>
-          )}
+        <div className="mt-auto pt-2">
+          <Button asChild className="w-full">
+            <Link href={`/app/appointments?vetId=${vet.id}`}>
+              <CalendarPlus className="size-4" />
+              Book appointment
+            </Link>
+          </Button>
         </div>
       </CardContent>
     </Card>

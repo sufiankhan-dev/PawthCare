@@ -53,16 +53,23 @@ export function BookAppointmentDialog({
   pets,
   vets,
   analyses = [],
+  initialVetId,
 }: {
   pets: Pet[];
   vets: VetListing[];
   analyses?: AiAnalysis[];
+  initialVetId?: string;
 }) {
-  const [open, setOpen] = useState(false);
+  const validInitialVetId =
+    initialVetId && vets.some((v) => v.id === initialVetId)
+      ? initialVetId
+      : "";
+
+  const [open, setOpen] = useState(Boolean(validInitialVetId) && pets.length > 0);
   const [pending, startTransition] = useTransition();
 
   const [petId, setPetId] = useState<string>(pets[0]?.id ?? "");
-  const [vetId, setVetId] = useState<string>("");
+  const [vetId, setVetId] = useState<string>(validInitialVetId);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [time, setTime] = useState<string>("09:00");
   const [calendarOpen, setCalendarOpen] = useState(false);
