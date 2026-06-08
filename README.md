@@ -1,145 +1,81 @@
 # 🐾 PawthCare
 
-**AI-powered pet health, from the palm of your hand to the clinic.**
+AI-powered pet health — for owners and clinics.
 
-PawthCare is a digital pet-health platform with two connected experiences: a **pet-owner app** for managing your animal's lifelong health record with AI assistance, and a **clinic suite** that gives veterinary teams an EMR, scheduling, and billing — all backed by the same shared data.
+PawthCare pairs a **pet-owner app** for managing your animal's lifelong health record with a **clinic suite** for veterinary teams, both backed by the same shared data.
 
----
+## Features
 
-## ✨ Features
+**Owners** — AI photo screening, an AI health assistant grounded in your pet's records, a digital pet passport (profile, weight, vaccinations, medications, visits), reminders, and a vet directory with appointment booking.
 
-### For pet owners (`/app`)
-- **AI photo screening** — Upload a photo and get an instant, structured health read: a risk score (0–100), urgency level, specific findings, and recommended next steps.
-- **AI health assistant** — Chat about symptoms and care, grounded in your pet's real records, vaccinations, and history.
-- **Digital pet passport** — One lifelong record per pet: profile, weight history, vaccinations, medications, visits, and AI analyses.
-- **Reminders** — Track vaccination due dates and medication schedules.
-- **Vet directory & appointments** — Browse partner vets and book visits, optionally sharing an AI screening with the clinic.
+**Clinics** — Patient EMR, scheduling with AI-flagged cases, and billing.
 
-### For clinics (`/clinic`)
-- **Patient EMR** — Records, diagnoses, and history per patient.
-- **Scheduling** — Manage appointments with AI-flagged cases surfaced.
-- **Billing** — Generate and track invoices.
+## Stack
 
----
+Next.js 16 · React 19 · TypeScript · Tailwind v4 · shadcn/ui · Drizzle ORM · Neon Postgres · better-auth · Vercel AI SDK (OpenAI) · Bun
 
-## 🧱 Tech stack
-
-| Layer | Technology |
-|---|---|
-| Framework | [Next.js 16](https://nextjs.org) (App Router) + React 19 |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4, [shadcn/ui](https://ui.shadcn.com) + Radix UI, `motion` |
-| Database | [Neon](https://neon.tech) Postgres |
-| ORM | [Drizzle ORM](https://orm.drizzle.team) + Drizzle Kit |
-| Auth | [better-auth](https://www.better-auth.com) (email/password + Google OAuth) |
-| AI | [Vercel AI SDK](https://sdk.vercel.ai) with OpenAI (`gpt-4o` vision, `gpt-4o-mini` chat) |
-| Runtime | [Bun](https://bun.sh) |
-
----
-
-## 🚀 Getting started
-
-### Prerequisites
-- [Bun](https://bun.sh) installed
-- A [Neon](https://neon.tech) (or any Postgres) database
-- An [OpenAI API key](https://platform.openai.com)
-- (Optional) Google OAuth credentials for social login
-
-### 1. Install dependencies
+## Setup
 
 ```bash
 bun install
 ```
 
-### 2. Configure environment
-
-Create a `.env` file in the project root:
+Create a `.env` file:
 
 ```bash
-# Postgres connection string (Neon, pg-compatible URL)
 DATABASE_URL=postgresql://user:password@host/db?sslmode=require
-
-# better-auth — generate a secret with: openssl rand -base64 32
-BETTER_AUTH_SECRET=your-generated-secret
+BETTER_AUTH_SECRET=your-secret          # openssl rand -base64 32
 BETTER_AUTH_URL=http://localhost:3000
-
-# OpenAI
 OPENAI_API_KEY=sk-...
-
-# Google OAuth (optional)
-GOOGLE_CLIENT_ID=your-client-id
-GOOGLE_CLIENT_SECRET=your-client-secret
+GOOGLE_CLIENT_ID=...                     # optional
+GOOGLE_CLIENT_SECRET=...                 # optional
 ```
 
-> ⚠️ **Never commit real secrets.** Keep `.env` out of version control.
-
-### 3. Set up the database
+Push the schema, seed demo data, then start the dev server:
 
 ```bash
-bun run db:push   # push the Drizzle schema to your database
-bun run db:seed   # (optional) seed demo data
-```
-
-### 4. Run the dev server
-
-```bash
+bun run db:push
+bun run db:seed   # optional
 bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+Open [http://localhost:3000](http://localhost:3000).
 
----
-
-## 📜 Scripts
+## Scripts
 
 | Command | Description |
 |---|---|
-| `bun run dev` | Start the development server |
+| `bun run dev` | Start the dev server |
 | `bun run build` | Production build |
 | `bun run start` | Start the production server |
 | `bun run lint` | Run ESLint |
-| `bun run db:push` | Push the schema to the database |
+| `bun run db:push` | Push schema to the database |
 | `bun run db:studio` | Open Drizzle Studio |
-| `bun run db:seed` | Seed the database with demo data |
+| `bun run db:seed` | Seed demo data |
 
----
-
-## 📁 Project structure
+## Structure
 
 ```
-my-app/
-├── app/
-│   ├── (auth)/            # Login & signup
-│   ├── app/               # Pet-owner app (pets, appointments, vets, AI assistant)
-│   ├── clinic/            # Clinic suite (patients, appointments, billing)
-│   └── api/
-│       ├── auth/[...all]/  # better-auth handler
-│       └── ai/             # analyze (photo), chat, assistant routes
-├── components/            # UI + feature components (shadcn/ui based)
-├── db/
-│   ├── schema.ts          # Drizzle schema (pets, records, AI analyses, etc.)
-│   ├── index.ts           # DB client
-│   └── seed.ts            # Demo seed data
-├── lib/                   # auth, queries, AI config, helpers
-└── drizzle.config.ts
+app/
+  (auth)/        Login & signup
+  app/           Pet-owner app
+  clinic/        Clinic suite
+  api/           Auth + AI routes
+components/       UI & feature components
+db/              Drizzle schema, client, seed
+lib/             Auth, queries, AI config, helpers
 ```
 
----
-
-## 🤖 AI endpoints
+## AI endpoints
 
 | Route | Purpose |
 |---|---|
-| `POST /api/ai/analyze` | Vision-based photo screening → structured risk score, findings, recommendations |
-| `POST /api/ai/chat` | Streaming pet-care chat assistant, grounded in the user's pets |
-| `POST /api/ai/assistant` | Pet-specific assistant grounded in a single pet's records |
+| `POST /api/ai/analyze` | Photo screening → risk score, findings, recommendations |
+| `POST /api/ai/chat` | Streaming pet-care assistant |
+| `POST /api/ai/assistant` | Pet-specific assistant grounded in one pet's records |
 
-All AI routes are authenticated and enforce role-based access (owners can access their own pets; clinicians can access patients).
+All routes are authenticated with role-based access. PawthCare's AI is a triage and education aid — not a substitute for a licensed veterinarian.
 
-> PawthCare's AI is a triage and education aid — **not** a substitute for a licensed veterinarian.
+## Deploy
 
----
-
-## 🚢 Deployment
-
-The app deploys cleanly to [Vercel](https://vercel.com). Set the same environment variables in your project settings and point `DATABASE_URL` at your production database. Update `BETTER_AUTH_URL` to your deployed URL.
+Deploys to [Vercel](https://vercel.com). Set the same env vars, point `DATABASE_URL` at production, and update `BETTER_AUTH_URL` to your deployed URL.
