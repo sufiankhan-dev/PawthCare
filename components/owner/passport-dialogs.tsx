@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -53,11 +54,15 @@ export function AddVaccinationDialog({ petId }: { petId: string }) {
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="administeredDate">Administered</Label>
-              <Input id="administeredDate" name="administeredDate" type="date" />
+              <DatePicker
+                id="administeredDate"
+                name="administeredDate"
+                placeholder="Select date"
+              />
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="dueDate">Next due</Label>
-              <Input id="dueDate" name="dueDate" type="date" />
+              <DatePicker id="dueDate" name="dueDate" placeholder="Select date" />
             </div>
           </div>
           <Button type="submit" disabled={pending}>
@@ -103,7 +108,11 @@ export function AddMedicationDialog({ petId }: { petId: string }) {
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="startDate">Start</Label>
-              <Input id="startDate" name="startDate" type="date" />
+              <DatePicker
+                id="startDate"
+                name="startDate"
+                placeholder="Select date"
+              />
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="reminderTime">Reminder</Label>

@@ -11,6 +11,7 @@ import {
   PawPrint,
   Receipt,
   Sparkles,
+  Stethoscope,
   Users,
 } from "lucide-react";
 
@@ -49,6 +50,7 @@ const OWNER_NAV: NavItem[] = [
   { href: "/app", label: "Dashboard", icon: <LayoutDashboard /> },
   { href: "/app/pets", label: "My pets", icon: <PawPrint /> },
   { href: "/app/appointments", label: "Appointments", icon: <Calendar /> },
+  { href: "/app/vets", label: "Find a vet", icon: <Stethoscope /> },
 ];
 
 const CLINIC_NAV: NavItem[] = [

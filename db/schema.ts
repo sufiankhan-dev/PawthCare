@@ -86,6 +86,29 @@ export const clinic = pgTable("clinic", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// Directory of partner vets shown to owners (separate from auth users).
+export const vetListing = pgTable("vet_listing", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  clinicName: text("clinic_name"),
+  specialty: text("specialty"),
+  bio: text("bio"),
+  address: text("address"),
+  city: text("city"),
+  phone: text("phone"),
+  email: text("email"),
+  rating: numeric("rating", { precision: 2, scale: 1 }),
+  reviewCount: integer("review_count").notNull().default(0),
+  yearsExperience: integer("years_experience"),
+  hours: text("hours"),
+  emergency: boolean("emergency").notNull().default(false),
+  acceptingNew: boolean("accepting_new").notNull().default(true),
+  imageUrl: text("image_url"),
+  lat: numeric("lat", { precision: 9, scale: 6 }),
+  lng: numeric("lng", { precision: 9, scale: 6 }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const pet = pgTable("pet", {
   id: uuid("id").primaryKey().defaultRandom(),
   ownerId: text("owner_id").notNull(),

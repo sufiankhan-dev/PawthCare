@@ -12,12 +12,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
-const fieldClass =
-  "flex h-9 w-full rounded-lg border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function AddVisitDialog({ petId }: { petId: string }) {
   const [open, setOpen] = useState(false);
@@ -49,17 +54,27 @@ export function AddVisitDialog({ petId }: { petId: string }) {
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="type">Type</Label>
-              <select id="type" name="type" className={fieldClass} defaultValue="checkup">
-                <option value="checkup">Checkup</option>
-                <option value="vaccination">Vaccination</option>
-                <option value="illness">Illness</option>
-                <option value="surgery">Surgery</option>
-                <option value="follow-up">Follow-up</option>
-              </select>
+              <Select name="type" defaultValue="checkup">
+                <SelectTrigger id="type" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="checkup">Checkup</SelectItem>
+                  <SelectItem value="vaccination">Vaccination</SelectItem>
+                  <SelectItem value="illness">Illness</SelectItem>
+                  <SelectItem value="surgery">Surgery</SelectItem>
+                  <SelectItem value="follow-up">Follow-up</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="visitDate">Date</Label>
-              <Input id="visitDate" name="visitDate" type="date" />
+              <DatePicker
+                id="visitDate"
+                name="visitDate"
+                placeholder="Select date"
+                disableFuture
+              />
             </div>
           </div>
           <div className="flex flex-col gap-1.5">

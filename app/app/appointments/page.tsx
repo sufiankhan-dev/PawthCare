@@ -5,14 +5,19 @@ import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDateTime } from "@/lib/format";
-import { getAppointmentsByOwner, getPetsByOwner } from "@/lib/queries";
+import {
+  getAppointmentsByOwner,
+  getPetsByOwner,
+  getVetListings,
+} from "@/lib/queries";
 import { requireOwner } from "@/lib/session";
 
 export default async function AppointmentsPage() {
   const user = await requireOwner();
-  const [pets, appointments] = await Promise.all([
+  const [pets, appointments, vets] = await Promise.all([
     getPetsByOwner(user.id),
     getAppointmentsByOwner(user.id),
+    getVetListings(),
   ]);
 
   const now = new Date();
@@ -26,7 +31,7 @@ export default async function AppointmentsPage() {
       <PageHeader
         title="Appointments"
         description="Schedule and track your vet visits."
-        action={<BookAppointmentDialog pets={pets} />}
+        action={<BookAppointmentDialog pets={pets} vets={vets} />}
       />
 
       <Section title="Upcoming" items={upcoming} emptyText="No upcoming appointments." />
@@ -70,6 +75,7 @@ function Section({
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {formatDateTime(a.scheduledAt)}
+                    {a.vetName ? ` · with ${a.vetName}` : ""}
                   </p>
                 </div>
                 <Badge variant={muted ? "secondary" : "outline"}>

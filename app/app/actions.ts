@@ -93,6 +93,7 @@ export async function bookAppointmentAction(formData: FormData) {
   await createAppointment({
     petId,
     clinicId: pet.clinicId,
+    vetId: str(formData.get("vetId")),
     scheduledAt: new Date(when),
     reason: str(formData.get("reason")),
   });

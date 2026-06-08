@@ -11,6 +11,7 @@ import {
   pet,
   user,
   vaccination,
+  vetListing,
   weightEntry,
 } from "@/db/schema";
 import type {
@@ -23,6 +24,7 @@ import type {
   Medication,
   Pet,
   Vaccination,
+  VetListing,
   WeightEntry,
 } from "@/lib/types";
 
@@ -156,10 +158,31 @@ export async function getWeightEntries(petId: string): Promise<WeightEntry[]> {
 
 // ---------- Appointments ----------
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function attachVetNames(rows: Appointment[]): Promise<Appointment[]> {
+  const ids = [
+    ...new Set(rows.map((r) => r.vetId).filter((v): v is string => !!v && UUID_RE.test(v))),
+  ];
+  if (ids.length === 0) return rows;
+
+  const listings = await db
+    .select({ id: vetListing.id, name: vetListing.name })
+    .from(vetListing)
+    .where(inArray(vetListing.id, ids));
+  const nameById = new Map(listings.map((l) => [l.id, l.name]));
+
+  return rows.map((r) => ({
+    ...r,
+    vetName: r.vetId ? nameById.get(r.vetId) : undefined,
+  }));
+}
+
 export async function getAppointmentsByOwner(
   ownerId: string,
 ): Promise<Appointment[]> {
-  return db
+  const rows = await db
     .select({
       id: appointment.id,
       petId: appointment.petId,
@@ -175,6 +198,7 @@ export async function getAppointmentsByOwner(
     .innerJoin(pet, eq(pet.id, appointment.petId))
     .where(eq(pet.ownerId, ownerId))
     .orderBy(asc(appointment.scheduledAt));
+  return attachVetNames(rows);
 }
 
 export async function getAppointmentsByClinic(
@@ -201,6 +225,7 @@ export async function getAppointmentsByClinic(
 export async function createAppointment(input: {
   petId: string;
   clinicId: string | null;
+  vetId?: string | null;
   scheduledAt: Date;
   reason: string | null;
 }): Promise<void> {
@@ -270,6 +295,15 @@ export async function setUserClinic(
   clinicId: string,
 ): Promise<void> {
   await db.update(user).set({ clinicId }).where(eq(user.id, userId));
+}
+
+// ---------- Vet directory ----------
+
+export async function getVetListings(): Promise<VetListing[]> {
+  return db
+    .select()
+    .from(vetListing)
+    .orderBy(desc(vetListing.rating), desc(vetListing.reviewCount));
 }
 
 // ---------- AI ----------

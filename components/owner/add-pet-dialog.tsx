@@ -13,12 +13,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DatePicker } from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
-const fieldClass =
-  "flex h-9 w-full rounded-lg border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function AddPetDialog() {
   const [open, setOpen] = useState(false);
@@ -56,13 +61,18 @@ export function AddPetDialog() {
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="species">Species</Label>
-              <select id="species" name="species" className={fieldClass} defaultValue="dog">
-                <option value="dog">Dog</option>
-                <option value="cat">Cat</option>
-                <option value="bird">Bird</option>
-                <option value="rabbit">Rabbit</option>
-                <option value="other">Other</option>
-              </select>
+              <Select name="species" defaultValue="dog">
+                <SelectTrigger id="species" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="dog">Dog</SelectItem>
+                  <SelectItem value="cat">Cat</SelectItem>
+                  <SelectItem value="bird">Bird</SelectItem>
+                  <SelectItem value="rabbit">Rabbit</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -72,17 +82,26 @@ export function AddPetDialog() {
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="sex">Sex</Label>
-              <select id="sex" name="sex" className={fieldClass} defaultValue="">
-                <option value="">Unspecified</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
+              <Select name="sex">
+                <SelectTrigger id="sex" className="w-full">
+                  <SelectValue placeholder="Unspecified" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="birthDate">Birth date</Label>
-              <Input id="birthDate" name="birthDate" type="date" />
+              <DatePicker
+                id="birthDate"
+                name="birthDate"
+                placeholder="Select date"
+                disableFuture
+              />
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="weightKg">Weight (kg)</Label>

@@ -126,6 +126,7 @@ export default async function OwnerDashboard() {
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {formatDateTime(a.scheduledAt)}
+                      {a.vetName ? ` · with ${a.vetName}` : ""}
                     </p>
                   </div>
                 </div>
