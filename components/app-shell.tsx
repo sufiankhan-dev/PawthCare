@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -9,11 +10,13 @@ import {
   LogOut,
   PawPrint,
   Receipt,
+  Sparkles,
   Users,
 } from "lucide-react";
 
 import { signOut } from "@/lib/auth-client";
 import { LogoMark } from "@/components/logo";
+import { AssistantWidget } from "@/components/ai/assistant-widget";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -66,6 +69,7 @@ export function AppShell({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [assistantOpen, setAssistantOpen] = useState(false);
   const nav = portal === "clinic" ? CLINIC_NAV : OWNER_NAV;
   const root = portal === "clinic" ? "/clinic" : "/app";
 
@@ -110,6 +114,23 @@ export function AppShell({
         </SidebarHeader>
 
         <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={() => setAssistantOpen(true)}
+                    tooltip="AI Assistant"
+                    className="bg-primary font-medium text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground data-active:bg-primary"
+                  >
+                    <Sparkles />
+                    <span>Ask AI</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -191,6 +212,8 @@ export function AppShell({
           <div className="mx-auto w-full max-w-6xl">{children}</div>
         </div>
       </SidebarInset>
+
+      <AssistantWidget open={assistantOpen} onOpenChange={setAssistantOpen} />
     </SidebarProvider>
   );
 }
