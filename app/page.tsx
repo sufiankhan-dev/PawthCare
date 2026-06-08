@@ -10,7 +10,6 @@ import {
   MessageCircleHeart,
   PawPrint,
   ScanLine,
-  ShieldCheck,
   Sparkles,
   Stethoscope,
 } from "lucide-react";
@@ -493,12 +492,6 @@ function SiteFooter() {
               One living health record for every pet — AI screening, a smart
               assistant, and tools clinics actually want to use.
             </p>
-            <Button asChild className="mt-6 shadow-lg shadow-primary/20">
-              <Link href="/signup">
-                <PawPrint className="size-4" />
-                Start free
-              </Link>
-            </Button>
           </div>
 
           {/* Link columns */}
@@ -524,10 +517,6 @@ function SiteFooter() {
         </div>
 
         <div className="flex flex-col items-center justify-between gap-3 border-t border-white/10 py-6 text-sm text-white/55 sm:flex-row">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="size-4 text-primary" />
-            AI guidance, not a veterinary diagnosis.
-          </div>
           <span>© {new Date().getFullYear()} PawthCare. All rights reserved.</span>
         </div>
       </div>
