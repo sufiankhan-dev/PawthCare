@@ -115,9 +115,6 @@ export function Hero() {
           </Button>
         </motion.div>
 
-        <motion.p variants={item} className="mt-5 text-xs text-white/45">
-          Demo logins: owner@pawthcare.app · vet@pawthcare.app · password123
-        </motion.p>
       </motion.div>
     </section>
   );
