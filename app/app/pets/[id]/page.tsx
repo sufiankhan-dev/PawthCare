@@ -10,6 +10,7 @@ import {
   getMedicalRecords,
   getMedications,
   getPetForOwner,
+  getUserBilling,
   getVaccinations,
 } from "@/lib/queries";
 import { requireOwner } from "@/lib/session";
@@ -24,12 +25,14 @@ export default async function PetPassportPage({
   const pet = await getPetForOwner(id, user.id);
   if (!pet) notFound();
 
-  const [vaccinations, medications, records, analyses] = await Promise.all([
-    getVaccinations(pet.id),
-    getMedications(pet.id),
-    getMedicalRecords(pet.id),
-    getAnalyses(pet.id),
-  ]);
+  const [vaccinations, medications, records, analyses, billing] =
+    await Promise.all([
+      getVaccinations(pet.id),
+      getMedications(pet.id),
+      getMedicalRecords(pet.id),
+      getAnalyses(pet.id),
+      getUserBilling(user.id),
+    ]);
 
   const latest = analyses[0];
   const needsAttention =
@@ -88,6 +91,10 @@ export default async function PetPassportPage({
         medications={medications}
         records={records}
         analyses={analyses}
+        screeningsUnlimited={billing.unlimited}
+        screeningsLeft={
+          Number.isFinite(billing.screeningsLeft) ? billing.screeningsLeft : 0
+        }
       />
     </>
   );

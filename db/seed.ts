@@ -209,11 +209,28 @@ async function ensureAppointmentColumns() {
   `);
 }
 
+async function ensureUserBillingColumns() {
+  // Idempotent: subscription / usage columns on the better-auth user table.
+  await db.execute(sql`
+    ALTER TABLE "user"
+    ADD COLUMN IF NOT EXISTS plan text NOT NULL DEFAULT 'companion'
+  `);
+  await db.execute(sql`
+    ALTER TABLE "user"
+    ADD COLUMN IF NOT EXISTS screenings_used integer NOT NULL DEFAULT 0
+  `);
+  await db.execute(sql`
+    ALTER TABLE "user"
+    ADD COLUMN IF NOT EXISTS screenings_period text
+  `);
+}
+
 async function main() {
   console.log("Seeding PawthCare demo data...");
 
   await ensureVetListings();
   await ensureAppointmentColumns();
+  await ensureUserBillingColumns();
 
   const clinic = await getOrCreateDefaultClinic();
 

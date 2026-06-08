@@ -32,6 +32,10 @@ export const user = pgTable("user", {
   // additionalFields
   role: text("role").default("owner"),
   clinicId: text("clinic_id"),
+  // Subscription / usage
+  plan: text("plan").notNull().default("companion"),
+  screeningsUsed: integer("screenings_used").notNull().default(0),
+  screeningsPeriod: text("screenings_period"),
 });
 
 export const session = pgTable("session", {

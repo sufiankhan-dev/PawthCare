@@ -34,6 +34,12 @@ export const auth = betterAuth({
         required: false,
         input: true,
       },
+      plan: {
+        type: "string",
+        required: false,
+        defaultValue: "companion",
+        input: false,
+      },
     },
   },
 });

@@ -27,6 +27,7 @@ import type {
   VetListing,
   WeightEntry,
 } from "@/lib/types";
+import { currentPeriod, planScreeningLimit } from "@/lib/plans";
 
 // ---------- Pets ----------
 
@@ -300,6 +301,81 @@ export async function setUserClinic(
   await db.update(user).set({ clinicId }).where(eq(user.id, userId));
 }
 
+export async function getUserById(
+  userId: string,
+): Promise<{ id: string; name: string; email: string } | null> {
+  const rows = await db
+    .select({ id: user.id, name: user.name, email: user.email })
+    .from(user)
+    .where(eq(user.id, userId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function getClinicStaffEmails(clinicId: string): Promise<string[]> {
+  const rows = await db
+    .select({ email: user.email })
+    .from(user)
+    .where(eq(user.clinicId, clinicId));
+  return rows.map((r) => r.email).filter(Boolean);
+}
+
+// ---------- Billing / usage ----------
+
+export type UserBilling = {
+  plan: string;
+  screeningsUsed: number;
+  screeningsLimit: number; // Infinity = unlimited
+  screeningsLeft: number; // Infinity = unlimited
+  unlimited: boolean;
+};
+
+export async function getUserBilling(userId: string): Promise<UserBilling> {
+  const rows = await db
+    .select({
+      plan: user.plan,
+      used: user.screeningsUsed,
+      period: user.screeningsPeriod,
+    })
+    .from(user)
+    .where(eq(user.id, userId))
+    .limit(1);
+
+  const row = rows[0];
+  const plan = row?.plan ?? "companion";
+  const limit = planScreeningLimit(plan);
+  const period = currentPeriod();
+  // Usage resets when the stored period isn't the current month.
+  const used = row && row.period === period ? row.used : 0;
+  const unlimited = !Number.isFinite(limit);
+  const left = unlimited ? Infinity : Math.max(0, limit - used);
+  return {
+    plan,
+    screeningsUsed: used,
+    screeningsLimit: limit,
+    screeningsLeft: left,
+    unlimited,
+  };
+}
+
+export async function incrementScreeningUsage(userId: string): Promise<void> {
+  const period = currentPeriod();
+  await db
+    .update(user)
+    .set({
+      screeningsUsed: sql`CASE WHEN ${user.screeningsPeriod} = ${period} THEN ${user.screeningsUsed} + 1 ELSE 1 END`,
+      screeningsPeriod: period,
+    })
+    .where(eq(user.id, userId));
+}
+
+export async function setUserPlan(
+  userId: string,
+  plan: string,
+): Promise<void> {
+  await db.update(user).set({ plan }).where(eq(user.id, userId));
+}
+
 // ---------- Vet directory ----------
 
 export async function getVetListings(): Promise<VetListing[]> {
@@ -307,6 +383,17 @@ export async function getVetListings(): Promise<VetListing[]> {
     .select()
     .from(vetListing)
     .orderBy(desc(vetListing.rating), desc(vetListing.reviewCount));
+}
+
+export async function getVetListingById(
+  id: string,
+): Promise<VetListing | null> {
+  const rows = await db
+    .select()
+    .from(vetListing)
+    .where(eq(vetListing.id, id))
+    .limit(1);
+  return rows[0] ?? null;
 }
 
 // ---------- AI ----------

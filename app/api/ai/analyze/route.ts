@@ -2,7 +2,12 @@ import { generateObject } from "ai";
 import { z } from "zod";
 
 import { AI_MODELS, URGENCY_LEVELS } from "@/lib/ai";
-import { getPetById, saveAnalysis } from "@/lib/queries";
+import {
+  getPetById,
+  getUserBilling,
+  incrementScreeningUsage,
+  saveAnalysis,
+} from "@/lib/queries";
 import { petAge } from "@/lib/format";
 import { getCurrentUser } from "@/lib/session";
 
@@ -58,6 +63,18 @@ export async function POST(req: Request) {
     return new Response("Forbidden", { status: 403 });
   }
 
+  // Free plan: enforce the monthly AI screening limit for pet owners.
+  const billing = isClinician ? null : await getUserBilling(user.id);
+  if (billing && !billing.unlimited && billing.screeningsLeft <= 0) {
+    return Response.json(
+      {
+        error: `You've used all ${billing.screeningsLimit} free screenings this month. Upgrade to Guardian for unlimited AI screening.`,
+        code: "limit_reached",
+      },
+      { status: 402 },
+    );
+  }
+
   const { mediaType, data } = parseDataUrl(body.image);
 
   try {
@@ -100,6 +117,11 @@ export async function POST(req: Request) {
       summary: object.summary,
       recommendations: object.recommendations,
     });
+
+    // Count usage only for limited (free) plans, after a successful screening.
+    if (billing && !billing.unlimited) {
+      await incrementScreeningUsage(user.id);
+    }
 
     return Response.json(object);
   } catch (err) {

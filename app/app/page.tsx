@@ -3,6 +3,7 @@ import {
   Calendar,
   PawPrint,
   ScanLine,
+  Sparkles,
   Syringe,
 } from "lucide-react";
 
@@ -10,6 +11,8 @@ import { AddPetDialog } from "@/components/owner/add-pet-dialog";
 import { PageHeader } from "@/components/page-header";
 import { PetCard } from "@/components/pet-card";
 import { StatCard } from "@/components/stat-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,20 +20,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatDateTime } from "@/lib/format";
+import { PLAN_META, type PlanId } from "@/lib/plans";
 import {
   getAppointmentsByOwner,
   getOwnerStats,
   getPetsByOwner,
+  getUserBilling,
 } from "@/lib/queries";
 import { requireOwner } from "@/lib/session";
 
 export default async function OwnerDashboard() {
   const user = await requireOwner();
-  const [stats, pets, appointments] = await Promise.all([
+  const [stats, pets, appointments, billing] = await Promise.all([
     getOwnerStats(user.id),
     getPetsByOwner(user.id),
     getAppointmentsByOwner(user.id),
+    getUserBilling(user.id),
   ]);
+
+  const planMeta = PLAN_META[(billing.plan as PlanId)] ?? PLAN_META.companion;
 
   const upcoming = appointments
     .filter((a) => new Date(a.scheduledAt) >= new Date())
@@ -43,6 +51,41 @@ export default async function OwnerDashboard() {
         description="Your pets' digital health, all in one place."
         action={<AddPetDialog />}
       />
+
+      <Card className="mb-6">
+        <CardContent className="flex flex-wrap items-center justify-between gap-4 py-4">
+          <div className="flex items-center gap-3">
+            <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Sparkles className="size-5" />
+            </span>
+            <div>
+              <p className="flex items-center gap-2 font-medium">
+                {planMeta.name} plan
+                <Badge variant={billing.unlimited ? "default" : "secondary"}>
+                  {planMeta.price} {planMeta.cadence}
+                </Badge>
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {billing.unlimited
+                  ? "Unlimited AI photo screenings."
+                  : `${billing.screeningsLeft} of ${billing.screeningsLimit} AI screenings left this month.`}
+              </p>
+            </div>
+          </div>
+          {billing.unlimited ? (
+            <Button variant="outline" asChild>
+              <Link href="/app/billing">Manage plan</Link>
+            </Button>
+          ) : (
+            <Button asChild>
+              <Link href="/app/billing/checkout">
+                <Sparkles className="size-4" />
+                Go Pro
+              </Link>
+            </Button>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard

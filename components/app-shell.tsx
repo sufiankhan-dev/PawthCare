@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   Calendar,
   ChevronsUpDown,
+  CreditCard,
   LayoutDashboard,
   LogOut,
   PawPrint,
@@ -51,6 +52,7 @@ const OWNER_NAV: NavItem[] = [
   { href: "/app/pets", label: "My pets", icon: <PawPrint /> },
   { href: "/app/appointments", label: "Appointments", icon: <Calendar /> },
   { href: "/app/vets", label: "Find a vet", icon: <Stethoscope /> },
+  { href: "/app/billing", label: "Plan & billing", icon: <CreditCard /> },
 ];
 
 const CLINIC_NAV: NavItem[] = [

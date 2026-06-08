@@ -39,12 +39,16 @@ export function PassportTabs({
   medications,
   records,
   analyses,
+  screeningsUnlimited = true,
+  screeningsLeft = Infinity,
 }: {
   pet: Pet;
   vaccinations: Vaccination[];
   medications: Medication[];
   records: MedicalRecord[];
   analyses: AiAnalysis[];
+  screeningsUnlimited?: boolean;
+  screeningsLeft?: number;
 }) {
   return (
     <Tabs defaultValue="overview">
@@ -187,7 +191,11 @@ export function PassportTabs({
 
       <TabsContent value="ai">
         <div className="grid gap-4 lg:grid-cols-2">
-          <PhotoAnalyzer petId={pet.id} />
+          <PhotoAnalyzer
+            petId={pet.id}
+            unlimited={screeningsUnlimited}
+            screeningsLeft={screeningsLeft}
+          />
           <div className="flex flex-col gap-4">
             <Card>
               <CardHeader>

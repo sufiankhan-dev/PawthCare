@@ -7,9 +7,17 @@ import {
   addVaccination,
   createAppointment,
   createPet,
+  getClinicStaffEmails,
   getOrCreateDefaultClinic,
   getPetForOwner,
+  getVetListingById,
 } from "@/lib/queries";
+import {
+  appointmentBookedOwnerEmail,
+  appointmentClinicEmail,
+  sendEmail,
+} from "@/lib/email";
+import { formatDateTime } from "@/lib/format";
 import { requireOwner } from "@/lib/session";
 
 function str(v: FormDataEntryValue | null): string | null {
@@ -85,19 +93,50 @@ export async function addMedicationAction(formData: FormData) {
 export async function bookAppointmentAction(formData: FormData) {
   const petId = str(formData.get("petId"));
   if (!petId) throw new Error("Missing pet");
-  const { pet } = await assertOwnsPet(petId);
+  const { user, pet } = await assertOwnsPet(petId);
 
   const when = str(formData.get("scheduledAt"));
   if (!when) throw new Error("Pick a date and time");
 
+  const vetId = str(formData.get("vetId"));
+  const reason = str(formData.get("reason"));
+  const scheduledAt = new Date(when);
+
   await createAppointment({
     petId,
     clinicId: pet.clinicId,
-    vetId: str(formData.get("vetId")),
-    scheduledAt: new Date(when),
-    reason: str(formData.get("reason")),
+    vetId,
+    scheduledAt,
+    reason,
     sharedAnalysisId: str(formData.get("sharedAnalysisId")),
   });
+
+  // Notify the owner and the clinic (best-effort — never blocks booking).
+  const vet = vetId ? await getVetListingById(vetId) : null;
+  const when_ = formatDateTime(scheduledAt);
+  const ownerTpl = appointmentBookedOwnerEmail({
+    ownerName: user.name,
+    petName: pet.name,
+    vetName: vet?.name,
+    when: when_,
+    reason: reason ?? undefined,
+  });
+  await sendEmail({ to: user.email, ...ownerTpl });
+
+  const clinicEmails = pet.clinicId
+    ? await getClinicStaffEmails(pet.clinicId)
+    : [];
+  if (clinicEmails.length > 0) {
+    const clinicTpl = appointmentClinicEmail({
+      petName: pet.name,
+      ownerName: user.name,
+      vetName: vet?.name,
+      when: when_,
+      reason: reason ?? undefined,
+    });
+    await sendEmail({ to: clinicEmails, ...clinicTpl });
+  }
+
   revalidatePath("/app/appointments");
   revalidatePath("/app");
 }

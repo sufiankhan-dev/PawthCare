@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ImagePlus, Loader2, ScanLine } from "lucide-react";
+import { ImagePlus, Loader2, Lock, ScanLine, Sparkles } from "lucide-react";
 
 import { AnalysisView } from "@/components/ai/analysis-view";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -39,7 +41,15 @@ async function fileToScaledDataUrl(file: File, max = 768): Promise<string> {
   return canvas.toDataURL("image/jpeg", 0.85);
 }
 
-export function PhotoAnalyzer({ petId }: { petId: string }) {
+export function PhotoAnalyzer({
+  petId,
+  unlimited = true,
+  screeningsLeft = Infinity,
+}: {
+  petId: string;
+  unlimited?: boolean;
+  screeningsLeft?: number;
+}) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -47,6 +57,10 @@ export function PhotoAnalyzer({ petId }: { petId: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
+  const [limitHit, setLimitHit] = useState(false);
+
+  const limited = !unlimited;
+  const locked = limited && (screeningsLeft <= 0 || limitHit);
 
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -72,7 +86,10 @@ export function PhotoAnalyzer({ petId }: { petId: string }) {
         body: JSON.stringify({ petId, image: preview, focus }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Analysis failed");
+      if (!res.ok) {
+        if (data.code === "limit_reached") setLimitHit(true);
+        throw new Error(data.error ?? "Analysis failed");
+      }
       setResult(data as Result);
       router.refresh();
     } catch (err) {
@@ -82,17 +99,62 @@ export function PhotoAnalyzer({ petId }: { petId: string }) {
     }
   }
 
+  if (locked) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ScanLine className="size-4 text-primary" />
+            AI photo analysis
+          </CardTitle>
+          <CardDescription>
+            Upload a clear photo for an instant AI health screening.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed bg-muted/40 px-6 py-10 text-center">
+            <span className="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Lock className="size-5" />
+            </span>
+            <p className="text-sm font-medium">
+              You&apos;ve used all your free screenings this month
+            </p>
+            <p className="max-w-sm text-sm text-muted-foreground">
+              Upgrade to <strong>Guardian</strong> for unlimited AI photo
+              screening and the full AI health assistant.
+            </p>
+            <Button asChild className="mt-1">
+              <Link href="/app/billing/checkout">
+                <Sparkles className="size-4" />
+                Go Pro
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ScanLine className="size-4 text-primary" />
-          AI photo analysis
-        </CardTitle>
-        <CardDescription>
-          Upload a clear photo (skin, eyes, ears, coat) for an instant AI health
-          screening.
-        </CardDescription>
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <ScanLine className="size-4 text-primary" />
+              AI photo analysis
+            </CardTitle>
+            <CardDescription>
+              Upload a clear photo (skin, eyes, ears, coat) for an instant AI
+              health screening.
+            </CardDescription>
+          </div>
+          {limited && Number.isFinite(screeningsLeft) ? (
+            <Badge variant="secondary" className="shrink-0">
+              {screeningsLeft} left this month
+            </Badge>
+          ) : null}
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <input
