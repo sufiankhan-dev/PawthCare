@@ -55,12 +55,12 @@ async function ensureUser(input: {
 }
 
 async function main() {
-  console.log("Seeding PawPulse demo data...");
+  console.log("Seeding PawthCare demo data...");
 
   const clinic = await getOrCreateDefaultClinic();
 
   const vetId = await ensureUser({
-    email: "vet@pawpulse.app",
+    email: "vet@pawthcare.app",
     password: "password123",
     name: "Dr. Sara Khan",
     role: "vet",
@@ -68,7 +68,7 @@ async function main() {
   await setUserClinic(vetId, clinic.id);
 
   const ownerId = await ensureUser({
-    email: "owner@pawpulse.app",
+    email: "owner@pawthcare.app",
     password: "password123",
     name: "Omar Ali",
     role: "owner",
@@ -245,8 +245,8 @@ async function main() {
   ]);
 
   console.log("Seed complete.");
-  console.log("  Owner login:  owner@pawpulse.app / password123");
-  console.log("  Vet login:    vet@pawpulse.app / password123");
+  console.log("  Owner login:  owner@pawthcare.app / password123");
+  console.log("  Vet login:    vet@pawthcare.app / password123");
 }
 
 main()

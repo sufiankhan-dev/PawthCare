@@ -104,7 +104,7 @@ export function AppShell({
                     )}
                   </span>
                   <div className="flex flex-col gap-0.5 leading-none">
-                    <span className="font-semibold">PawPulse</span>
+                    <span className="font-semibold">PawthCare</span>
                     <span className="text-xs text-muted-foreground">
                       {portal === "clinic" ? "Clinic" : "Pet owner"}
                     </span>

@@ -12,7 +12,7 @@ export default function AuthLayout({
         <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
           <PawPrint className="size-5" />
         </span>
-        <span className="text-xl font-semibold tracking-tight">PawPulse</span>
+        <span className="text-xl font-semibold tracking-tight">PawthCare</span>
       </Link>
       {children}
     </div>

@@ -110,7 +110,7 @@ export default function LandingPage() {
             <ShieldCheck className="size-4 text-primary" />
             AI guidance, not a veterinary diagnosis.
           </div>
-          <span>© {new Date().getFullYear()} PawPulse</span>
+          <span>© {new Date().getFullYear()} PawthCare</span>
         </div>
       </footer>
     </div>

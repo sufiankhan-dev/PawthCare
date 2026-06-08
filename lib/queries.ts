@@ -257,7 +257,7 @@ export async function getOrCreateDefaultClinic(): Promise<Clinic> {
   const rows = await db
     .insert(clinic)
     .values({
-      name: "PawPulse Demo Clinic",
+      name: "PawthCare Demo Clinic",
       address: "12 Wellness Ave, Riyadh",
       phone: "+966 11 000 0000",
     })

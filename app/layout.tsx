@@ -15,7 +15,7 @@ const heading = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "PawPulse — Digital Pet Health Ecosystem",
+  title: "PawthCare — Digital Pet Health Ecosystem",
   description:
     "A digital health twin for every pet: AI photo screening, an AI health assistant, and a connected clinic record — for pet owners and veterinary clinics.",
 };

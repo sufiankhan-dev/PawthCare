@@ -44,7 +44,7 @@ export function Hero() {
             <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <PawPrint className="size-4" />
             </span>
-            <span className="text-lg font-semibold tracking-tight">PawPulse</span>
+            <span className="text-lg font-semibold tracking-tight">PawthCare</span>
           </div>
           <nav className="flex items-center gap-2">
             <Button
@@ -89,7 +89,7 @@ export function Hero() {
           variants={item}
           className="mt-6 max-w-2xl text-pretty text-lg text-white/70"
         >
-          PawPulse connects pet owners and veterinary clinics around one living
+          PawthCare connects pet owners and veterinary clinics around one living
           health record — with AI photo screening and an assistant that actually
           knows your pet.
         </motion.p>
@@ -116,7 +116,7 @@ export function Hero() {
         </motion.div>
 
         <motion.p variants={item} className="mt-5 text-xs text-white/45">
-          Demo logins: owner@pawpulse.app · vet@pawpulse.app · password123
+          Demo logins: owner@pawthcare.app · vet@pawthcare.app · password123
         </motion.p>
       </motion.div>
     </section>
