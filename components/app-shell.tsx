@@ -9,11 +9,11 @@ import {
   LogOut,
   PawPrint,
   Receipt,
-  Stethoscope,
   Users,
 } from "lucide-react";
 
 import { signOut } from "@/lib/auth-client";
+import { LogoMark } from "@/components/logo";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -96,13 +96,7 @@ export function AppShell({
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
                 <Link href={root}>
-                  <span className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                    {portal === "clinic" ? (
-                      <Stethoscope className="size-4" />
-                    ) : (
-                      <PawPrint className="size-4" />
-                    )}
-                  </span>
+                  <LogoMark className="size-8" />
                   <div className="flex flex-col gap-0.5 leading-none">
                     <span className="font-semibold">PawthCare</span>
                     <span className="text-xs text-muted-foreground">

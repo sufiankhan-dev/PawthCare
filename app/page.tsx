@@ -16,6 +16,7 @@ import {
 
 import { Hero } from "@/components/landing/hero";
 import { Reveal } from "@/components/landing/reveal";
+import { LogoMark } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 
 const FEATURES = [
@@ -483,9 +484,7 @@ function SiteFooter() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <PawPrint className="size-4" />
-              </span>
+              <LogoMark className="size-8" />
               <span className="text-lg font-semibold tracking-tight">PawthCare</span>
             </div>
             <p className="mt-4 max-w-xs text-sm text-white/60">

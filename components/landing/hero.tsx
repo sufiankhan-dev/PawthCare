@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { ArrowRight, PawPrint, Sparkles } from "lucide-react";
 
 import { Spotlight } from "@/components/ui/spotlight-new";
+import { LogoMark } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 
 const container = {
@@ -41,9 +42,7 @@ export function Hero() {
       <header className="relative z-10">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4">
           <div className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <PawPrint className="size-4" />
-            </span>
+            <LogoMark className="size-8" />
             <span className="text-lg font-semibold tracking-tight">PawthCare</span>
           </div>
           <nav className="flex items-center gap-1 sm:gap-2">

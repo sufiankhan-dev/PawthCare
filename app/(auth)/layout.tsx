@@ -3,9 +3,10 @@ import {
   ArrowLeft,
   HeartPulse,
   MessageCircleHeart,
-  PawPrint,
   ScanLine,
 } from "lucide-react";
+
+import { LogoMark } from "@/components/logo";
 
 const HIGHLIGHTS = [
   {
@@ -40,9 +41,7 @@ export default function AuthLayout({
 
         <div className="relative z-10 p-10">
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <PawPrint className="size-5" />
-            </span>
+            <LogoMark className="size-9 rounded-xl" />
             <span className="text-xl font-semibold tracking-tight">PawthCare</span>
           </Link>
         </div>
@@ -84,9 +83,7 @@ export default function AuthLayout({
           </Link>
           {/* compact logo for mobile */}
           <Link href="/" className="flex items-center gap-2 lg:hidden">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <PawPrint className="size-4" />
-            </span>
+            <LogoMark className="size-8" />
             <span className="font-semibold tracking-tight">PawthCare</span>
           </Link>
         </div>
