@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { PawPrint, Stethoscope } from "lucide-react";
 
 import { signUp } from "@/lib/auth-client";
+import { GoogleButton } from "@/components/auth/google-button";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -50,14 +51,20 @@ export default function SignupPage() {
   }
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-md rounded-2xl border-border/60 shadow-xl shadow-black/[0.04]">
       <CardHeader>
-        <CardTitle className="text-xl">Create your account</CardTitle>
+        <CardTitle className="text-2xl tracking-tight">Create your account</CardTitle>
         <CardDescription>
           Start building your pet&apos;s digital health twin.
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <GoogleButton callbackURL="/app" label="Sign up with Google" />
+        <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="h-px flex-1 bg-border" />
+          or
+          <span className="h-px flex-1 bg-border" />
+        </div>
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-2">
             <RoleButton

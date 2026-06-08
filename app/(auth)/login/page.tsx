@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { signIn } from "@/lib/auth-client";
+import { GoogleButton } from "@/components/auth/google-button";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,12 +39,18 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-md rounded-2xl border-border/60 shadow-xl shadow-black/[0.04]">
       <CardHeader>
-        <CardTitle className="text-xl">Welcome back</CardTitle>
+        <CardTitle className="text-2xl tracking-tight">Welcome back</CardTitle>
         <CardDescription>Sign in to your PawthCare account.</CardDescription>
       </CardHeader>
       <CardContent>
+        <GoogleButton callbackURL="/app" />
+        <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="h-px flex-1 bg-border" />
+          or
+          <span className="h-px flex-1 bg-border" />
+        </div>
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="email">Email</Label>
