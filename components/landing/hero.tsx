@@ -46,7 +46,27 @@ export function Hero() {
             </span>
             <span className="text-lg font-semibold tracking-tight">PawthCare</span>
           </div>
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-1 sm:gap-2">
+            <div className="mr-2 hidden items-center gap-1 md:flex">
+              <Link
+                href="#features"
+                className="rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:text-white"
+              >
+                Features
+              </Link>
+              <Link
+                href="#how"
+                className="rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:text-white"
+              >
+                How it works
+              </Link>
+              <Link
+                href="#pricing"
+                className="rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:text-white"
+              >
+                Pricing
+              </Link>
+            </div>
             <Button
               asChild
               variant="ghost"
