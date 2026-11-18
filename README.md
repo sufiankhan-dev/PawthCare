@@ -12,7 +12,7 @@ PawthCare pairs a **pet-owner app** for managing your animal's lifelong health r
 
 ## Stack
 
-Next.js 16 · React 19 · TypeScript · Tailwind v4 · shadcn/ui · Drizzle ORM · Neon Postgres · better-auth · Vercel AI SDK (OpenAI) · Bun
+Next.js 16 · React 19 · TypeScript · Tailwind v4 · shadcn/ui · Drizzle ORM · Neon Postgres · better-auth · Google Gemini (`@google/genai`) · Bun
 
 ## Setup
 
@@ -26,10 +26,12 @@ Create a `.env` file:
 DATABASE_URL=postgresql://user:password@host/db?sslmode=require
 BETTER_AUTH_SECRET=your-secret          # openssl rand -base64 32
 BETTER_AUTH_URL=http://localhost:3000
-OPENAI_API_KEY=sk-...
+GEMINI_API_KEY=...                       # https://aistudio.google.com/apikey
 GOOGLE_CLIENT_ID=...                     # optional
 GOOGLE_CLIENT_SECRET=...                 # optional
 ```
+
+Gemini models default to `gemini-3.8-flash` (photo screening) and `gemini-3.5-flash-lite` (chat). Override them with `GEMINI_VISION_MODEL` / `GEMINI_CHAT_MODEL`, or change the defaults in `lib/ai/config.ts`.
 
 Push the schema, seed demo data, then start the dev server:
 

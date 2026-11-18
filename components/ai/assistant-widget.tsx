@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { Bot, Send, Sparkles, X } from "lucide-react";
+import { MessageCircleHeart, Sparkles, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import {
+  ChatComposer,
+  ChatMessages,
+  ChatSuggestions,
+} from "@/components/ai/chat-ui";
 
 const SUGGESTIONS = [
   "What can PawthCare do for my pet?",
@@ -26,156 +28,99 @@ export function AssistantWidget({
   open: boolean;
   onOpenChange: (value: boolean) => void;
 }) {
-  const [input, setInput] = useState("");
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error, regenerate, stop } = useChat({
     transport: new DefaultChatTransport({ api: "/api/ai/chat" }),
   });
 
-  const busy = status === "submitted" || status === "streaming";
+  const send = (text: string) => void sendMessage({ text });
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-  }, [messages, open]);
-
-  function submit(text: string) {
-    const value = text.trim();
-    if (!value || busy) return;
-    sendMessage({ text: value });
-    setInput("");
-  }
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onOpenChange(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onOpenChange]);
 
   return (
     <>
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 16, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.98 }}
-            transition={{ duration: 0.2, ease: EASE }}
-            className="fixed inset-x-4 bottom-24 z-50 flex h-[70vh] max-h-[560px] flex-col overflow-hidden rounded-2xl border bg-background shadow-2xl shadow-black/10 sm:inset-x-auto sm:right-6 sm:w-[384px]"
+            role="dialog"
+            aria-label="PawthCare assistant"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ duration: 0.18, ease: EASE }}
+            className="fixed inset-x-3 bottom-[5.5rem] top-auto z-50 flex h-[min(600px,calc(100dvh-7rem))] flex-col overflow-hidden rounded-2xl bg-card shadow-soft-lg ring-1 ring-foreground/[0.06] sm:inset-x-auto sm:right-6 sm:w-[400px]"
           >
-            <div className="flex items-center justify-between gap-2 bg-gradient-to-br from-primary to-[#0c8f7e] px-4 py-3 text-primary-foreground">
-              <div className="flex items-center gap-2">
-                <span className="flex size-8 items-center justify-center rounded-lg bg-white/15">
+            <div className="flex items-center justify-between gap-2 border-b border-border/60 px-4 py-3">
+              <div className="flex items-center gap-3">
+                <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <Sparkles className="size-4" />
                 </span>
                 <div className="leading-tight">
                   <p className="text-sm font-semibold">PawthCare Assistant</p>
-                  <p className="text-xs text-primary-foreground/80">
-                    Pets, care &amp; PawthCare help
+                  <p className="text-xs text-muted-foreground">
+                    Pets, care &amp; app help
                   </p>
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => onOpenChange(false)}
-                className="rounded-md p-1 text-primary-foreground/80 transition-colors hover:bg-white/15 hover:text-white"
+                className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 aria-label="Close assistant"
               >
                 <X className="size-4" />
               </button>
             </div>
 
-            <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-4">
-              {messages.length === 0 && (
-                <div className="flex flex-col items-center gap-4 py-6 text-center">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Bot className="size-5" />
+            <ChatMessages
+              messages={messages}
+              status={status}
+              error={error}
+              onRetry={() => void regenerate()}
+              empty={
+                <div className="flex h-full flex-col items-center justify-center gap-4 py-6 text-center">
+                  <span className="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <MessageCircleHeart className="size-5" />
                   </span>
-                  <p className="max-w-[15rem] text-sm text-muted-foreground">
+                  <p className="max-w-[16rem] text-sm text-muted-foreground">
                     Hi! Ask me anything about PawthCare, your pets, or pet health.
                   </p>
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {SUGGESTIONS.map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => submit(s)}
-                        className="rounded-full border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
+                  <ChatSuggestions suggestions={SUGGESTIONS} onPick={send} />
                 </div>
-              )}
+              }
+            />
 
-              {messages.map((m) => {
-                const text = m.parts
-                  .filter((p) => p.type === "text")
-                  .map((p) => (p as { text: string }).text)
-                  .join("");
-                return (
-                  <div
-                    key={m.id}
-                    className={cn(
-                      "flex",
-                      m.role === "user" ? "justify-end" : "justify-start",
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm",
-                        m.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted",
-                      )}
-                    >
-                      {text || (busy ? "…" : "")}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                submit(input);
-              }}
-              className="flex items-center gap-2 border-t p-3"
-            >
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask anything..."
-                disabled={busy}
-              />
-              <Button type="submit" size="icon" disabled={busy || !input.trim()}>
-                <Send className="size-4" />
-              </Button>
-            </form>
+            <ChatComposer
+              onSend={send}
+              onStop={() => void stop()}
+              status={status}
+              placeholder="Ask anything…"
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
       <button
+        type="button"
         onClick={() => onOpenChange(!open)}
-        className="fixed bottom-6 right-6 z-50 flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-[#0c8f7e] text-primary-foreground shadow-xl shadow-primary/30 transition-transform hover:scale-105 active:scale-95"
+        className="fixed bottom-5 right-5 z-50 flex size-13 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-soft-lg transition-transform hover:scale-[1.04] active:scale-95 sm:bottom-6 sm:right-6"
         aria-label={open ? "Close AI assistant" : "Open AI assistant"}
+        aria-expanded={open}
       >
         <AnimatePresence mode="wait" initial={false}>
-          {open ? (
-            <motion.span
-              key="close"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
-              <X className="size-6" />
-            </motion.span>
-          ) : (
-            <motion.span
-              key="open"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
-              <Sparkles className="size-6" />
-            </motion.span>
-          )}
+          <motion.span
+            key={open ? "close" : "open"}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.12 }}
+          >
+            {open ? <X className="size-5" /> : <Sparkles className="size-5" />}
+          </motion.span>
         </AnimatePresence>
       </button>
     </>

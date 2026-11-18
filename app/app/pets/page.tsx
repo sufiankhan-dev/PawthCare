@@ -3,7 +3,7 @@ import { PawPrint } from "lucide-react";
 import { AddPetDialog } from "@/components/owner/add-pet-dialog";
 import { PageHeader } from "@/components/page-header";
 import { PetCard } from "@/components/pet-card";
-import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/empty-state";
 import { getPetsByOwner } from "@/lib/queries";
 import { requireOwner } from "@/lib/session";
 
@@ -19,13 +19,12 @@ export default async function PetsPage() {
         action={<AddPetDialog />}
       />
       {pets.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-            <PawPrint className="size-8 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">No pets yet.</p>
-            <AddPetDialog />
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={<PawPrint />}
+          title="No pets yet"
+          description="Add your first companion to start their health record."
+          action={<AddPetDialog />}
+        />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {pets.map((pet) => (

@@ -1,140 +1,147 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowRight, PawPrint, Sparkles } from "lucide-react";
+import { ArrowRight, Menu, PawPrint, ShieldCheck, X } from "lucide-react";
 
-import { Spotlight } from "@/components/ui/spotlight-new";
 import { LogoMark } from "@/components/logo";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-const container = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
-  },
-};
+const NAV = [
+  { href: "#features", label: "Features" },
+  { href: "#how", label: "How it works" },
+  { href: "#pricing", label: "Pricing" },
+];
 
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: {
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
-  },
+    transition: { duration: 0.5, delay: 0.05 + i * 0.08, ease: [0.22, 1, 0.36, 1] as const },
+  }),
 };
 
 export function Hero() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <section className="relative overflow-hidden bg-[#07120f] text-white">
-      {/* teal spotlight beams */}
-      <Spotlight
-        gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(170, 90%, 65%, 0.14) 0, hsla(170, 85%, 45%, 0.05) 50%, hsla(170, 85%, 40%, 0) 80%)"
-        gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(165, 90%, 60%, 0.1) 0, hsla(165, 85%, 45%, 0.04) 80%, transparent 100%)"
-        gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(150, 90%, 60%, 0.07) 0, hsla(150, 85%, 45%, 0.03) 80%, transparent 100%)"
-      />
-
-      {/* subtle grid + glow */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(45,212,191,0.12),transparent_55%)]" />
-      <div className="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
-
-      {/* nav */}
-      <header className="relative z-10">
-        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4">
-          <div className="flex items-center gap-2">
+    <>
+      <header className="sticky top-0 z-30 border-b border-transparent bg-background/80 backdrop-blur-md">
+        <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
+          <Link href="/" className="flex items-center gap-2.5">
             <LogoMark className="size-8" />
-            <span className="text-lg font-semibold tracking-tight">PawthCare</span>
-          </div>
-          <nav className="flex items-center gap-1 sm:gap-2">
-            <div className="mr-2 hidden items-center gap-1 md:flex">
+            <span className="text-[1.05rem] font-semibold tracking-tight">PawthCare</span>
+          </Link>
+
+          <nav className="hidden items-center gap-1 md:flex">
+            {NAV.map((n) => (
               <Link
-                href="#features"
-                className="rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:text-white"
+                key={n.href}
+                href={n.href}
+                className="rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
-                Features
+                {n.label}
               </Link>
-              <Link
-                href="#how"
-                className="rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:text-white"
-              >
-                How it works
-              </Link>
-              <Link
-                href="#pricing"
-                className="rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:text-white"
-              >
-                Pricing
-              </Link>
-            </div>
-            <Button
-              asChild
-              variant="ghost"
-              className="text-white/80 hover:bg-white/10 hover:text-white"
-            >
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <Button asChild variant="ghost" className="hidden sm:inline-flex">
               <Link href="/login">Sign in</Link>
             </Button>
-            <Button asChild className="shadow-lg shadow-primary/20">
+            <Button asChild>
               <Link href="/signup">Get started</Link>
             </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? <X /> : <Menu />}
+            </Button>
+          </div>
+        </div>
+
+        <div
+          className={cn(
+            "overflow-hidden border-b border-border/60 bg-background transition-[max-height] duration-200 md:hidden",
+            menuOpen ? "max-h-72" : "max-h-0 border-transparent",
+          )}
+        >
+          <nav className="flex flex-col gap-1 px-4 pb-4 pt-1">
+            {[...NAV, { href: "/login", label: "Sign in" }].map((n) => (
+              <Link
+                key={n.href}
+                href={n.href}
+                onClick={() => setMenuOpen(false)}
+                className="rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                {n.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </header>
 
-      {/* hero content */}
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-28 pt-20 text-center sm:pt-28"
-      >
+      <section className="mx-auto flex w-full max-w-3xl flex-col items-center px-4 pb-20 pt-16 text-center sm:px-6 sm:pb-28 sm:pt-24">
         <motion.span
-          variants={item}
-          className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur"
+          custom={0}
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-1.5 text-xs font-medium text-accent-foreground"
         >
-          <Sparkles className="size-3.5 text-primary" />
-          The digital health ecosystem for pets
+          <ShieldCheck className="size-3.5" />
+          The connected health record for pets
         </motion.span>
 
         <motion.h1
-          variants={item}
-          className="mt-6 text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
+          custom={1}
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="mt-6 text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl md:text-6xl"
         >
-          A health twin for{" "}
-          <span className="italic text-primary">every pet</span>,
-          <br className="hidden sm:block" /> powered by AI
+          Calm, clear care for <span className="text-primary">every pet</span>
         </motion.h1>
 
         <motion.p
-          variants={item}
-          className="mt-6 max-w-2xl text-pretty text-lg text-white/70"
+          custom={2}
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="mt-5 max-w-xl text-pretty text-base text-muted-foreground sm:text-lg"
         >
           PawthCare connects pet owners and veterinary clinics around one living
-          health record — with AI photo screening and an assistant that actually
-          knows your pet.
+          health record — with AI photo screening and an assistant that knows
+          your pet&apos;s history.
         </motion.p>
 
         <motion.div
-          variants={item}
-          className="mt-9 flex flex-wrap items-center justify-center gap-3"
+          custom={3}
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="mt-9 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row"
         >
-          <Button asChild size="lg" className="group shadow-xl shadow-primary/25">
+          <Button asChild size="lg" className="group w-full sm:w-auto">
             <Link href="/signup">
               <PawPrint className="size-4" />
               Start free
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
-          >
-            <Link href="/login">Sign in</Link>
+          <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+            <Link href="#how">See how it works</Link>
           </Button>
         </motion.div>
-
-      </motion.div>
-    </section>
+      </section>
+    </>
   );
 }

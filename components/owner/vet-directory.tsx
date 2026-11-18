@@ -44,7 +44,7 @@ export function VetDirectory({ vets }: { vets: VetListing[] }) {
 
       {filtered.length === 0 ? (
         <Card>
-          <CardContent className="py-8 text-center text-sm text-muted-foreground">
+          <CardContent className="py-10 text-center text-sm text-muted-foreground">
             No vets match &ldquo;{query}&rdquo;.
           </CardContent>
         </Card>

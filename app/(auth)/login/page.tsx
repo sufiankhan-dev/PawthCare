@@ -39,14 +39,14 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="w-full max-w-md rounded-2xl border-border/60 shadow-xl shadow-black/[0.04]">
-      <CardHeader>
-        <CardTitle className="text-2xl tracking-tight">Welcome back</CardTitle>
+    <Card className="w-full max-w-md shadow-soft-lg">
+      <CardHeader className="sm:px-7 sm:pt-2">
+        <CardTitle className="text-xl sm:text-2xl">Welcome back</CardTitle>
         <CardDescription>Sign in to your PawthCare account.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="sm:px-7 sm:pb-2">
         <GoogleButton callbackURL="/app" />
-        <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+        <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
           <span className="h-px flex-1 bg-border" />
           or
           <span className="h-px flex-1 bg-border" />
@@ -74,14 +74,18 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" disabled={loading}>
+          {error && (
+            <p role="alert" className="rounded-xl bg-destructive/[0.07] px-3.5 py-2.5 text-sm text-destructive">
+              {error}
+            </p>
+          )}
+          <Button type="submit" size="lg" disabled={loading} className="mt-1">
             {loading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-muted-foreground">
           No account?{" "}
-          <Link href="/signup" className="font-medium text-foreground underline">
+          <Link href="/signup" className="font-medium text-primary underline-offset-4 hover:underline">
             Create one
           </Link>
         </p>

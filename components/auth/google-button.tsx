@@ -25,6 +25,7 @@ export function GoogleButton({
     <Button
       type="button"
       variant="outline"
+      size="lg"
       className="w-full"
       onClick={onClick}
       disabled={loading}

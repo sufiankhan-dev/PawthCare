@@ -51,16 +51,16 @@ export default function SignupPage() {
   }
 
   return (
-    <Card className="w-full max-w-md rounded-2xl border-border/60 shadow-xl shadow-black/[0.04]">
-      <CardHeader>
-        <CardTitle className="text-2xl tracking-tight">Create your account</CardTitle>
+    <Card className="w-full max-w-md shadow-soft-lg">
+      <CardHeader className="sm:px-7 sm:pt-2">
+        <CardTitle className="text-xl sm:text-2xl">Create your account</CardTitle>
         <CardDescription>
           Start building your pet&apos;s digital health twin.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="sm:px-7 sm:pb-2">
         <GoogleButton callbackURL="/app" label="Sign up with Google" />
-        <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+        <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
           <span className="h-px flex-1 bg-border" />
           or
           <span className="h-px flex-1 bg-border" />
@@ -112,14 +112,18 @@ export default function SignupPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" disabled={loading}>
+          {error && (
+            <p role="alert" className="rounded-xl bg-destructive/[0.07] px-3.5 py-2.5 text-sm text-destructive">
+              {error}
+            </p>
+          )}
+          <Button type="submit" size="lg" disabled={loading} className="mt-1">
             {loading ? "Creating account..." : "Create account"}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-foreground underline">
+          <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
             Sign in
           </Link>
         </p>
@@ -144,10 +148,10 @@ function RoleButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center gap-1.5 rounded-lg border p-3 text-sm font-medium transition-colors",
+        "flex flex-col items-center gap-1.5 rounded-xl border p-3.5 text-sm font-medium transition-colors",
         active
-          ? "border-primary bg-primary/5 text-foreground"
-          : "border-input text-muted-foreground hover:bg-accent",
+          ? "border-primary/50 bg-primary/[0.06] text-foreground ring-2 ring-primary/15"
+          : "border-border text-muted-foreground hover:bg-muted",
       )}
     >
       {icon}

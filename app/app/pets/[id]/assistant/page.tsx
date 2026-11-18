@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import type { UIMessage } from "ai";
 
+import { BackLink } from "@/components/back-link";
 import { AssistantChat } from "@/components/ai/assistant-chat";
 import { getChatMessages, getPetForOwner } from "@/lib/queries";
 import { requireOwner } from "@/lib/session";
@@ -26,13 +25,7 @@ export default async function AssistantPage({
 
   return (
     <>
-      <Link
-        href={`/app/pets/${pet.id}`}
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Back to {pet.name}
-      </Link>
+      <BackLink href={`/app/pets/${pet.id}`}>Back to {pet.name}</BackLink>
       <AssistantChat
         petId={pet.id}
         petName={pet.name}

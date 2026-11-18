@@ -4,13 +4,15 @@ import Link from "next/link";
 import {
   CalendarClock,
   FileText,
+  MessageCircleHeart,
   Pill,
-  Sparkles,
+  ScanLine,
   Syringe,
 } from "lucide-react";
 
-import { AnalysisView } from "@/components/ai/analysis-view";
 import { PhotoAnalyzer } from "@/components/ai/photo-analyzer";
+import { ScreeningHistory } from "@/components/ai/screening-history";
+import { EmptyState } from "@/components/empty-state";
 import {
   AddMedicationDialog,
   AddVaccinationDialog,
@@ -51,13 +53,13 @@ export function PassportTabs({
   screeningsLeft?: number;
 }) {
   return (
-    <Tabs defaultValue="overview">
-      <TabsList className="flex-wrap">
+    <Tabs defaultValue="overview" className="gap-6">
+      <TabsList>
         <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="ai">AI Health</TabsTrigger>
         <TabsTrigger value="vaccinations">Vaccinations</TabsTrigger>
         <TabsTrigger value="medications">Medications</TabsTrigger>
         <TabsTrigger value="records">Records</TabsTrigger>
-        <TabsTrigger value="ai">AI Health</TabsTrigger>
       </TabsList>
 
       <TabsContent value="overview">
@@ -66,7 +68,7 @@ export function PassportTabs({
             <CardHeader>
               <CardTitle>Profile</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-3 text-sm">
+            <CardContent className="grid grid-cols-2 gap-x-4 gap-y-5 text-sm">
               <Fact label="Species" value={pet.species} />
               <Fact label="Breed" value={pet.breed} />
               <Fact label="Sex" value={pet.sex} />
@@ -82,10 +84,60 @@ export function PassportTabs({
             <CardHeader>
               <CardTitle>Notes</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
+            <CardContent className="text-sm leading-relaxed text-muted-foreground">
               {pet.notes || "No notes yet."}
             </CardContent>
           </Card>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="ai">
+        <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+          <PhotoAnalyzer
+            petId={pet.id}
+            petName={pet.name}
+            unlimited={screeningsUnlimited}
+            screeningsLeft={screeningsLeft}
+          />
+          <div className="flex flex-col gap-4">
+            <Card>
+              <CardContent className="flex items-start gap-4">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <MessageCircleHeart className="size-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">Ask the AI assistant</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Chat about {pet.name}&apos;s symptoms and care, grounded in
+                    their records.
+                  </p>
+                  <Button asChild variant="outline" size="sm" className="mt-3">
+                    <Link href={`/app/pets/${pet.id}/assistant`}>
+                      Open assistant
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Past screenings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {analyses.length > 0 ? (
+                  <ScreeningHistory analyses={analyses} />
+                ) : (
+                  <EmptyState
+                    icon={<ScanLine />}
+                    title="No screenings yet"
+                    description="Results from photo screenings will appear here."
+                    className="py-8"
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </TabsContent>
 
@@ -96,30 +148,27 @@ export function PassportTabs({
           action={<AddVaccinationDialog petId={pet.id} />}
         />
         {vaccinations.length === 0 ? (
-          <EmptyState text="No vaccinations recorded yet." />
+          <EmptyState icon={<Syringe />} title="No vaccinations recorded yet" />
         ) : (
-          <div className="grid gap-2">
+          <ListCard>
             {vaccinations.map((v) => (
-              <Card key={v.id}>
-                <CardContent className="flex items-center justify-between py-1">
-                  <div>
-                    <p className="font-medium">{v.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {v.administeredDate
-                        ? `Given ${formatDate(v.administeredDate)}`
-                        : "Not yet given"}
-                      {v.dueDate ? ` · Next ${formatDate(v.dueDate)}` : ""}
-                    </p>
-                  </div>
-                  <Badge
-                    variant={v.status === "completed" ? "success" : "warning"}
-                  >
+              <ListRow
+                key={v.id}
+                title={v.name}
+                subtitle={
+                  (v.administeredDate
+                    ? `Given ${formatDate(v.administeredDate)}`
+                    : "Not yet given") +
+                  (v.dueDate ? ` · Next ${formatDate(v.dueDate)}` : "")
+                }
+                trailing={
+                  <Badge variant={v.status === "completed" ? "success" : "warning"}>
                     {v.status === "completed" ? "Up to date" : "Due"}
                   </Badge>
-                </CardContent>
-              </Card>
+                }
+              />
             ))}
-          </div>
+          </ListCard>
         )}
       </TabsContent>
 
@@ -130,29 +179,28 @@ export function PassportTabs({
           action={<AddMedicationDialog petId={pet.id} />}
         />
         {medications.length === 0 ? (
-          <EmptyState text="No medications recorded yet." />
+          <EmptyState icon={<Pill />} title="No medications recorded yet" />
         ) : (
-          <div className="grid gap-2">
+          <ListCard>
             {medications.map((m) => (
-              <Card key={m.id}>
-                <CardContent className="flex items-center justify-between py-1">
-                  <div>
-                    <p className="font-medium">{m.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {[m.dosage, m.frequency].filter(Boolean).join(" · ") ||
-                        "No schedule set"}
-                    </p>
-                  </div>
-                  {m.reminderTime && (
+              <ListRow
+                key={m.id}
+                title={m.name}
+                subtitle={
+                  [m.dosage, m.frequency].filter(Boolean).join(" · ") ||
+                  "No schedule set"
+                }
+                trailing={
+                  m.reminderTime ? (
                     <Badge variant="secondary">
-                      <CalendarClock className="mr-1 size-3" />
+                      <CalendarClock className="size-3" />
                       {m.reminderTime}
                     </Badge>
-                  )}
-                </CardContent>
-              </Card>
+                  ) : null
+                }
+              />
             ))}
-          </div>
+          </ListCard>
         )}
       </TabsContent>
 
@@ -162,89 +210,25 @@ export function PassportTabs({
           title="Medical records"
         />
         {records.length === 0 ? (
-          <EmptyState text="No clinical visits recorded yet." />
+          <EmptyState icon={<FileText />} title="No clinical visits recorded yet" />
         ) : (
-          <div className="grid gap-2">
+          <ListCard>
             {records.map((r) => (
-              <Card key={r.id}>
-                <CardContent className="py-1">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium capitalize">{r.type}</p>
-                    <span className="text-xs text-muted-foreground">
-                      {formatDate(r.visitDate)}
-                    </span>
-                  </div>
-                  {r.diagnosis && (
-                    <p className="mt-1 text-sm">{r.diagnosis}</p>
-                  )}
-                  {r.notes && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {r.notes}
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
+              <div key={r.id} className="px-5 py-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-medium capitalize">{r.type}</p>
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {formatDate(r.visitDate)}
+                  </span>
+                </div>
+                {r.diagnosis && <p className="mt-1 text-sm">{r.diagnosis}</p>}
+                {r.notes && (
+                  <p className="mt-1 text-sm text-muted-foreground">{r.notes}</p>
+                )}
+              </div>
             ))}
-          </div>
+          </ListCard>
         )}
-      </TabsContent>
-
-      <TabsContent value="ai">
-        <div className="grid gap-4 lg:grid-cols-2">
-          <PhotoAnalyzer
-            petId={pet.id}
-            unlimited={screeningsUnlimited}
-            screeningsLeft={screeningsLeft}
-          />
-          <div className="flex flex-col gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="size-4 text-primary" />
-                  Ask the AI assistant
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-3 text-sm text-muted-foreground">
-                  Chat about {pet.name}&apos;s symptoms and care, grounded in
-                  their records.
-                </p>
-                <Button asChild>
-                  <Link href={`/app/pets/${pet.id}/assistant`}>
-                    Open assistant
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {analyses.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Past screenings</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4">
-                  {analyses.slice(0, 3).map((a) => (
-                    <div
-                      key={a.id}
-                      className="rounded-xl border bg-muted/30 p-4"
-                    >
-                      <p className="mb-2 text-xs text-muted-foreground">
-                        {formatDate(a.createdAt)}
-                      </p>
-                      <AnalysisView
-                        summary={a.summary}
-                        riskScore={a.riskScore}
-                        urgency={a.urgency}
-                        findings={a.findings}
-                        recommendations={a.recommendations}
-                      />
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
       </TabsContent>
     </Tabs>
   );
@@ -252,11 +236,9 @@ export function PassportTabs({
 
 function Fact({ label, value }: { label: string; value: string | null }) {
   return (
-    <div>
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">
-        {label}
-      </p>
-      <p className="capitalize">{value || "—"}</p>
+    <div className="min-w-0">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-0.5 truncate font-medium capitalize">{value || "—"}</p>
     </div>
   );
 }
@@ -271,9 +253,9 @@ function SectionHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="mb-3 flex items-center justify-between">
+    <div className="mb-4 flex items-center justify-between gap-3">
       <h2 className="flex items-center gap-2 text-lg font-semibold">
-        {icon}
+        <span className="text-muted-foreground">{icon}</span>
         {title}
       </h2>
       {action}
@@ -281,12 +263,31 @@ function SectionHeader({
   );
 }
 
-function EmptyState({ text }: { text: string }) {
+/** One soft card holding a divided list, instead of a card per row. */
+function ListCard({ children }: { children: React.ReactNode }) {
   return (
-    <Card>
-      <CardContent className="py-8 text-center text-sm text-muted-foreground">
-        {text}
-      </CardContent>
+    <Card className="gap-0 py-0">
+      <div className="divide-y divide-border/60">{children}</div>
     </Card>
+  );
+}
+
+function ListRow({
+  title,
+  subtitle,
+  trailing,
+}: {
+  title: string;
+  subtitle: string;
+  trailing?: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 px-5 py-4">
+      <div className="min-w-0">
+        <p className="truncate font-medium">{title}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
+      </div>
+      {trailing}
+    </div>
   );
 }

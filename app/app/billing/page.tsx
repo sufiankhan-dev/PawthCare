@@ -38,7 +38,7 @@ export default async function BillingPage({
       />
 
       {upgraded ? (
-        <div className="mb-6 flex items-center gap-3 rounded-xl border border-emerald-300/70 bg-emerald-50 p-4 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
+        <div role="status" className="mb-6 flex items-center gap-3 rounded-2xl bg-emerald-500/[0.08] p-4 text-emerald-800 dark:text-emerald-300">
           <CheckCircle2 className="size-5 shrink-0" />
           <p className="text-sm font-medium">
             You&apos;re on Guardian now — a confirmation email is on its way.

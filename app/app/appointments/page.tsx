@@ -1,9 +1,10 @@
 import { Calendar, Sparkles } from "lucide-react";
 
 import { BookAppointmentDialog } from "@/components/owner/book-appointment-dialog";
+import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { formatDateTime } from "@/lib/format";
 import {
   getAppointmentsByOwner,
@@ -70,20 +71,16 @@ function Section({
     <div>
       <h2 className="mb-3 text-lg font-semibold">{title}</h2>
       {items.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-center text-sm text-muted-foreground">
-            {emptyText}
-          </CardContent>
-        </Card>
+        <EmptyState icon={<Calendar />} title={emptyText} />
       ) : (
-        <div className="grid gap-2">
+        <Card className="gap-0 py-0">
+          <div className="divide-y divide-border/60">
           {items.map((a) => (
-            <Card key={a.id}>
-              <CardContent className="flex items-center gap-4 py-1">
-                <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div key={a.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <Calendar className="size-4" />
                 </span>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 basis-48">
                   <p className="truncate font-medium">
                     {a.petName} · {a.reason || "Visit"}
                   </p>
@@ -92,19 +89,21 @@ function Section({
                     {a.vetName ? ` · with ${a.vetName}` : ""}
                   </p>
                 </div>
-                {a.sharedAnalysisId ? (
-                  <Badge variant="secondary" className="gap-1">
-                    <Sparkles className="size-3" />
-                    Screening shared
+                <div className="flex flex-wrap gap-1.5 pl-14 sm:pl-0">
+                  {a.sharedAnalysisId ? (
+                    <Badge variant="secondary">
+                      <Sparkles className="size-3" />
+                      Screening shared
+                    </Badge>
+                  ) : null}
+                  <Badge variant={muted ? "secondary" : "outline"} className="capitalize">
+                    {a.status}
                   </Badge>
-                ) : null}
-                <Badge variant={muted ? "secondary" : "outline"}>
-                  {a.status}
-                </Badge>
-              </CardContent>
-            </Card>
+                </div>
+              </div>
           ))}
-        </div>
+          </div>
+        </Card>
       )}
     </div>
   );
