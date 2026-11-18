@@ -212,10 +212,10 @@ export function BookAppointmentDialog({
             <label
               htmlFor="shareScreening"
               className={cn(
-                "flex cursor-pointer items-start gap-3 rounded-lg border p-3 text-left transition-colors",
+                "flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 text-left transition-colors",
                 shareScreening
-                  ? "border-primary/40 bg-primary/5"
-                  : "border-input hover:bg-muted/40",
+                  ? "border-primary/40 bg-primary/[0.06]"
+                  : "border-border hover:bg-muted/50",
               )}
             >
               <input

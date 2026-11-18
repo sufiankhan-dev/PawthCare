@@ -125,7 +125,7 @@ export function AppShell({
                   <SidebarMenuButton
                     onClick={() => setAssistantOpen(true)}
                     tooltip="AI Assistant"
-                    className="bg-primary font-medium text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground data-active:bg-primary"
+                    className="bg-primary font-medium text-primary-foreground shadow-xs hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
                   >
                     <Sparkles />
                     <span>Ask AI</span>
@@ -207,12 +207,12 @@ export function AppShell({
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-12 shrink-0 items-center gap-3 border-b px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="h-full" />
-          <span className="font-medium">{activeLabel}</span>
+        <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background/85 px-4 backdrop-blur-md md:px-6">
+          <SidebarTrigger className="-ml-1.5 text-muted-foreground" />
+          <Separator orientation="vertical" className="h-5!" />
+          <span className="truncate text-sm font-medium">{activeLabel}</span>
         </header>
-        <div className="p-4 md:p-8">
+        <div className="px-4 py-6 pb-28 sm:px-6 md:px-8 md:py-10">
           <div className="mx-auto w-full max-w-6xl">{children}</div>
         </div>
       </SidebarInset>

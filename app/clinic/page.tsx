@@ -46,7 +46,7 @@ export default async function ClinicDashboard() {
         description="Practice overview and AI-flagged cases."
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           label="Patients"
           value={stats.patients}
@@ -70,7 +70,7 @@ export default async function ClinicDashboard() {
         />
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -90,7 +90,7 @@ export default async function ClinicDashboard() {
                   <Link
                     key={a.id}
                     href={`/clinic/patients/${a.petId}`}
-                    className="flex items-start justify-between gap-3 border-b pb-3 last:border-0 last:pb-0"
+                    className="flex items-start justify-between gap-3 border-b border-border/60 pb-3 last:border-0 last:pb-0"
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">
@@ -121,9 +121,9 @@ export default async function ClinicDashboard() {
               upcoming.map((a) => (
                 <div
                   key={a.id}
-                  className="flex items-center gap-3 border-b pb-3 last:border-0 last:pb-0"
+                  className="flex items-center gap-3 border-b border-border/60 pb-3 last:border-0 last:pb-0"
                 >
-                  <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <Calendar className="size-4" />
                   </span>
                   <div className="min-w-0 flex-1">

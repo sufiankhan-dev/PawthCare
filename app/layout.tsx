@@ -1,18 +1,18 @@
-import type { Metadata } from "next";
-import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const sans = Plus_Jakarta_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const heading = Fraunces({
-  variable: "--font-heading",
-  subsets: ["latin"],
-  axes: ["SOFT", "opsz"],
-});
+
+export const viewport: Viewport = {
+  themeColor: "#fbfaf7",
+};
 
 export const metadata: Metadata = {
   title: "PawthCare — Digital Pet Health Ecosystem",
@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sans.variable} ${heading.variable} h-full antialiased`}
+      className={`${sans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <TooltipProvider>{children}</TooltipProvider>

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AlertTriangle, ArrowLeft, Stethoscope } from "lucide-react";
+import { AlertTriangle, Stethoscope } from "lucide-react";
 
+import { BackLink } from "@/components/back-link";
 import { PassportTabs } from "@/components/owner/passport-tabs";
+import { PetHeader } from "@/components/pet-header";
 import { Button } from "@/components/ui/button";
-import { petAge, speciesEmoji } from "@/lib/format";
 import {
   getAnalyses,
   getMedicalRecords,
@@ -43,40 +44,22 @@ export default async function PetPassportPage({
 
   return (
     <>
-      <Link
-        href="/app/pets"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        All pets
-      </Link>
-
-      <div className="mb-6 flex items-center gap-4">
-        <span className="flex size-16 items-center justify-center rounded-2xl bg-muted text-3xl">
-          {speciesEmoji(pet.species)}
-        </span>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{pet.name}</h1>
-          <p className="text-sm text-muted-foreground">
-            {pet.breed || pet.species} · {petAge(pet.birthDate)}
-            {pet.weightKg ? ` · ${pet.weightKg} kg` : ""}
-          </p>
-        </div>
-      </div>
+      <BackLink href="/app/pets">All pets</BackLink>
+      <PetHeader pet={pet} />
 
       {needsAttention && (
-        <div className="mb-6 flex flex-wrap items-center gap-4 rounded-xl border border-amber-300/70 bg-amber-50 p-4 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-amber-600">
+        <div className="mb-8 flex flex-col gap-4 rounded-2xl bg-amber-500/[0.08] p-4 sm:flex-row sm:items-center sm:p-5">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400">
             <AlertTriangle className="size-5" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="font-medium">{pet.name} may need a vet visit</p>
-            <p className="text-sm text-amber-800/80 dark:text-amber-200/70">
+            <p className="mt-0.5 text-sm text-muted-foreground">
               A recent AI screening flagged something to watch. Book a checkup or
               find a clinic nearby.
             </p>
           </div>
-          <Button asChild className="bg-amber-600 hover:bg-amber-700">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
             <Link href="/app/vets">
               <Stethoscope className="size-4" />
               Find a vet

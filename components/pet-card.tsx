@@ -6,10 +6,10 @@ import type { Pet } from "@/lib/types";
 
 export function PetCard({ pet, href }: { pet: Pet; href: string }) {
   return (
-    <Link href={href} className="group block">
-      <Card className="transition-shadow group-hover:shadow-md">
+    <Link href={href} className="group block rounded-2xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
+      <Card className="transition-shadow duration-200 group-hover:shadow-soft-lg">
         <CardContent className="flex items-center gap-4 py-1">
-          <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-muted text-2xl">
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-muted text-2xl">
             {speciesEmoji(pet.species)}
           </span>
           <div className="min-w-0">

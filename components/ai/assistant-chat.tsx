@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { Bot, Send, Sparkles } from "lucide-react";
+import { MessageCircleHeart, Sparkles } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import {
+  ChatComposer,
+  ChatMessages,
+  ChatSuggestions,
+} from "@/components/ai/chat-ui";
 
 const SUGGESTIONS = [
   "Why might my pet be scratching so much?",
@@ -25,8 +26,7 @@ export function AssistantChat({
   petName: string;
   initialMessages: UIMessage[];
 }) {
-  const [input, setInput] = useState("");
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error, regenerate, stop } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/ai/assistant",
       body: { petId },
@@ -34,95 +34,49 @@ export function AssistantChat({
     messages: initialMessages,
   });
 
-  const busy = status === "submitted" || status === "streaming";
-
-  function submit(text: string) {
-    const value = text.trim();
-    if (!value || busy) return;
-    sendMessage({ text: value });
-    setInput("");
-  }
+  const send = (text: string) => void sendMessage({ text });
 
   return (
-    <div className="flex h-[70vh] flex-col overflow-hidden rounded-xl border bg-background">
-      <div className="flex items-center gap-2 border-b px-4 py-3">
-        <span className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+    <div className="flex h-[calc(100dvh-13rem)] min-h-[420px] flex-col overflow-hidden rounded-2xl bg-card shadow-soft ring-1 ring-foreground/[0.05] md:h-[calc(100dvh-14rem)]">
+      <div className="flex items-center gap-3 border-b border-border/60 px-4 py-3.5 sm:px-5">
+        <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <Sparkles className="size-4" />
         </span>
-        <div className="leading-tight">
-          <p className="text-sm font-medium">{petName}&apos;s AI assistant</p>
-          <p className="text-xs text-muted-foreground">
-            Grounded in {petName}&apos;s health records
+        <div className="min-w-0 leading-tight">
+          <p className="truncate text-sm font-semibold">
+            {petName}&apos;s AI assistant
+          </p>
+          <p className="truncate text-xs text-muted-foreground">
+            Grounded in {petName}&apos;s health records · not a diagnosis
           </p>
         </div>
       </div>
 
-      <div className="flex-1 space-y-4 overflow-y-auto p-4">
-        {messages.length === 0 && (
-          <div className="flex flex-col items-center gap-4 py-8 text-center">
-            <Bot className="size-8 text-muted-foreground" />
+      <ChatMessages
+        messages={messages}
+        status={status}
+        error={error}
+        onRetry={() => void regenerate()}
+        className="sm:px-6"
+        empty={
+          <div className="flex h-full flex-col items-center justify-center gap-4 py-8 text-center">
+            <span className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <MessageCircleHeart className="size-5" />
+            </span>
             <p className="max-w-xs text-sm text-muted-foreground">
               Ask anything about {petName}&apos;s health, behavior, or care.
             </p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => submit(s)}
-                  className="rounded-full border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
+            <ChatSuggestions suggestions={SUGGESTIONS} onPick={send} />
           </div>
-        )}
+        }
+      />
 
-        {messages.map((m) => {
-          const text = m.parts
-            .filter((p) => p.type === "text")
-            .map((p) => (p as { text: string }).text)
-            .join("");
-          return (
-            <div
-              key={m.id}
-              className={cn(
-                "flex",
-                m.role === "user" ? "justify-end" : "justify-start",
-              )}
-            >
-              <div
-                className={cn(
-                  "max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm",
-                  m.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted",
-                )}
-              >
-                {text || (busy ? "…" : "")}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit(input);
-        }}
-        className="flex items-center gap-2 border-t p-3"
-      >
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder={`Ask about ${petName}...`}
-          disabled={busy}
-        />
-        <Button type="submit" size="icon" disabled={busy || !input.trim()}>
-          <Send className="size-4" />
-        </Button>
-      </form>
+      <ChatComposer
+        onSend={send}
+        onStop={() => void stop()}
+        status={status}
+        placeholder={`Ask about ${petName}…`}
+      />
     </div>
   );
 }

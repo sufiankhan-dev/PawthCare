@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, Check, Lock } from "lucide-react";
+import { Check, Lock } from "lucide-react";
 
 import { upgradePlanAction } from "@/app/app/billing/actions";
+import { BackLink } from "@/components/back-link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,20 +20,14 @@ export default async function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <Link
-        href="/app/billing"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Back to billing
-      </Link>
+      <BackLink href="/app/billing">Back to billing</BackLink>
 
       <Card>
         <CardHeader>
           <CardTitle>Upgrade to {plan.name}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
-          <div className="rounded-xl border bg-muted/30 p-4">
+          <div className="rounded-xl bg-muted/60 p-4">
             <div className="flex items-center justify-between">
               <span className="font-medium">{plan.name} plan</span>
               <span className="font-semibold">

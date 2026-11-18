@@ -12,7 +12,7 @@ const HIGHLIGHTS = [
   {
     icon: <ScanLine className="size-4" />,
     title: "AI photo screening",
-    body: "Instant, structured health reads from a single photo.",
+    body: "Structured health reads from a single photo.",
   },
   {
     icon: <MessageCircleHeart className="size-4" />,
@@ -32,63 +32,58 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="grid min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
       {/* Brand panel */}
-      <aside className="relative hidden overflow-hidden bg-[#07120f] text-white lg:flex lg:flex-col lg:justify-between">
-        {/* grid + glow */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(45,212,191,0.14),transparent_55%)]" />
-        <div className="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_at_center,black_25%,transparent_75%)]" />
+      <aside className="hidden flex-col justify-between bg-muted/70 p-10 lg:flex xl:p-14">
+        <Link href="/" className="flex w-fit items-center gap-2.5">
+          <LogoMark className="size-9 rounded-xl" />
+          <span className="text-xl font-semibold tracking-tight">PawthCare</span>
+        </Link>
 
-        <div className="relative z-10 p-10">
-          <Link href="/" className="flex items-center gap-2">
-            <LogoMark className="size-9 rounded-xl" />
-            <span className="text-xl font-semibold tracking-tight">PawthCare</span>
-          </Link>
-        </div>
-
-        <div className="relative z-10 px-10">
-          <h2 className="max-w-md text-balance text-4xl font-semibold leading-[1.1] tracking-tight">
-            A health twin for{" "}
-            <span className="italic text-primary">every pet</span>, powered by AI
+        <div>
+          <h2 className="max-w-md text-4xl font-semibold leading-[1.12] tracking-tight">
+            Calm, clear care for <span className="text-primary">every pet</span>
           </h2>
-          <ul className="mt-10 flex flex-col gap-5">
+          <ul className="mt-10 flex max-w-sm flex-col gap-3">
             {HIGHLIGHTS.map((h) => (
-              <li key={h.title} className="flex items-start gap-3">
-                <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/5 text-primary ring-1 ring-white/10">
+              <li
+                key={h.title}
+                className="flex items-start gap-3.5 rounded-2xl bg-card p-4 shadow-soft"
+              >
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   {h.icon}
                 </span>
                 <div>
-                  <p className="font-medium">{h.title}</p>
-                  <p className="text-sm text-white/55">{h.body}</p>
+                  <p className="text-sm font-medium">{h.title}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{h.body}</p>
                 </div>
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="relative z-10 p-10 text-sm text-white/40">
+        <p className="text-sm text-muted-foreground">
           © {new Date().getFullYear()} PawthCare
-        </div>
+        </p>
       </aside>
 
       {/* Form panel */}
-      <main className="relative flex flex-col bg-gradient-to-b from-muted/40 to-background">
-        <div className="flex items-center justify-between px-6 py-6">
+      <main className="flex flex-col bg-background">
+        <div className="flex items-center justify-between px-4 py-5 sm:px-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="-ml-2 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <ArrowLeft className="size-4" />
             Back home
           </Link>
-          {/* compact logo for mobile */}
           <Link href="/" className="flex items-center gap-2 lg:hidden">
             <LogoMark className="size-8" />
             <span className="font-semibold tracking-tight">PawthCare</span>
           </Link>
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-6 pb-16">
+        <div className="flex flex-1 items-center justify-center px-4 pb-12 sm:px-6 sm:pb-16">
           {children}
         </div>
       </main>

@@ -7,6 +7,7 @@ import {
   Syringe,
 } from "lucide-react";
 
+import { EmptyState } from "@/components/empty-state";
 import { AddPetDialog } from "@/components/owner/add-pet-dialog";
 import { PageHeader } from "@/components/page-header";
 import { PetCard } from "@/components/pet-card";
@@ -52,14 +53,13 @@ export default async function OwnerDashboard() {
         action={<AddPetDialog />}
       />
 
-      <Card className="mb-6">
-        <CardContent className="flex flex-wrap items-center justify-between gap-4 py-4">
-          <div className="flex items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+      <div className="mb-6 flex flex-col gap-4 rounded-2xl bg-muted/70 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+          <div className="flex items-center gap-3.5">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-card text-primary shadow-soft">
               <Sparkles className="size-5" />
             </span>
             <div>
-              <p className="flex items-center gap-2 font-medium">
+              <p className="flex flex-wrap items-center gap-2 font-medium">
                 {planMeta.name} plan
                 <Badge variant={billing.unlimited ? "default" : "secondary"}>
                   {planMeta.price} {planMeta.cadence}
@@ -73,21 +73,20 @@ export default async function OwnerDashboard() {
             </div>
           </div>
           {billing.unlimited ? (
-            <Button variant="outline" asChild>
+            <Button variant="outline" asChild className="w-full sm:w-auto">
               <Link href="/app/billing">Manage plan</Link>
             </Button>
           ) : (
-            <Button asChild>
+            <Button asChild className="w-full sm:w-auto">
               <Link href="/app/billing/checkout">
                 <Sparkles className="size-4" />
-                Go Pro
+                Upgrade
               </Link>
             </Button>
           )}
-        </CardContent>
-      </Card>
+      </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           label="Pets"
           value={stats.pets}
@@ -111,27 +110,24 @@ export default async function OwnerDashboard() {
         />
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+      <div className="mt-10 grid items-start gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold">My pets</h2>
             <Link
               href="/app/pets"
-              className="text-sm text-muted-foreground hover:text-foreground"
+              className="text-sm font-medium text-primary underline-offset-4 hover:underline"
             >
               View all
             </Link>
           </div>
           {pets.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center gap-3 py-10 text-center">
-                <PawPrint className="size-8 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">
-                  No pets yet. Add your first companion to get started.
-                </p>
-                <AddPetDialog />
-              </CardContent>
-            </Card>
+            <EmptyState
+              icon={<PawPrint />}
+              title="No pets yet"
+              description="Add your first companion to get started."
+              action={<AddPetDialog />}
+            />
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
               {pets.map((pet) => (
@@ -149,7 +145,7 @@ export default async function OwnerDashboard() {
           <CardHeader>
             <CardTitle>Upcoming appointments</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3">
+          <CardContent className="flex flex-col divide-y divide-border/60">
             {upcoming.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 No upcoming appointments.
@@ -158,9 +154,9 @@ export default async function OwnerDashboard() {
               upcoming.map((a) => (
                 <div
                   key={a.id}
-                  className="flex items-start gap-3 border-b pb-3 last:border-0 last:pb-0"
+                  className="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
                 >
-                  <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <Calendar className="size-4" />
                   </span>
                   <div className="min-w-0">

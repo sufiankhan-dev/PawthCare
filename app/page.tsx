@@ -3,9 +3,9 @@ import {
   Activity,
   ArrowRight,
   Bell,
-  CalendarCheck,
   Camera,
   Check,
+  ChevronDown,
   HeartPulse,
   MessageCircleHeart,
   PawPrint,
@@ -139,9 +139,9 @@ export default function LandingPage() {
         <Hero />
 
         {/* Features */}
-        <section id="features" className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-20">
+        <section id="features" className="mx-auto w-full max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24">
           <Reveal className="mb-12 max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+            <p className="text-sm font-medium text-primary">
               One platform
             </p>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -149,11 +149,11 @@ export default function LandingPage() {
             </h2>
           </Reveal>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {FEATURES.map((f, i) => (
               <Reveal key={f.title} delay={i * 0.08}>
-                <div className="group h-full rounded-2xl border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-                  <span className="mb-4 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <div className="h-full rounded-2xl bg-card p-6 shadow-soft ring-1 ring-foreground/[0.05]">
+                  <span className="mb-4 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     {f.icon}
                   </span>
                   <h3 className="font-semibold">{f.title}</h3>
@@ -165,10 +165,10 @@ export default function LandingPage() {
         </section>
 
         {/* How it works */}
-        <section id="how" className="scroll-mt-20 border-y bg-secondary/30">
-          <div className="mx-auto w-full max-w-6xl px-4 py-20">
+        <section id="how" className="scroll-mt-20 bg-muted/60">
+          <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
             <Reveal className="mb-12 max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+              <p className="text-sm font-medium text-primary">
                 How it works
               </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -179,8 +179,8 @@ export default function LandingPage() {
             <div className="grid gap-4 md:grid-cols-3">
               {STEPS.map((s, i) => (
                 <Reveal key={s.title} delay={i * 0.1}>
-                  <div className="relative h-full rounded-2xl border bg-card p-7">
-                    <span className="absolute right-6 top-6 text-4xl font-semibold text-primary/15">
+                  <div className="relative h-full rounded-2xl bg-card p-7 shadow-soft">
+                    <span className="absolute right-6 top-6 text-sm font-medium tabular-nums text-muted-foreground">
                       {s.step}
                     </span>
                     <span className="mb-5 flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -196,10 +196,10 @@ export default function LandingPage() {
         </section>
 
         {/* AI showcase */}
-        <section className="mx-auto w-full max-w-6xl px-4 py-20">
+        <section className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <div className="grid items-center gap-10 lg:grid-cols-2">
             <Reveal>
-              <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+              <p className="text-sm font-medium text-primary">
                 AI, grounded in your pet
               </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -233,7 +233,7 @@ export default function LandingPage() {
             </Reveal>
 
             <Reveal delay={0.1}>
-              <div className="rounded-3xl border bg-card p-6 shadow-xl shadow-primary/5">
+              <div className="rounded-3xl bg-card p-6 shadow-soft-lg ring-1 ring-foreground/[0.05]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -244,18 +244,18 @@ export default function LandingPage() {
                       <p className="text-xs text-muted-foreground">Bella · Golden Retriever</p>
                     </div>
                   </div>
-                  <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-medium text-amber-600">
+                  <span className="rounded-full bg-amber-500/12 px-2.5 py-1 text-xs font-medium text-amber-700">
                     Monitor
                   </span>
                 </div>
 
-                <div className="mt-5 rounded-2xl bg-secondary/50 p-4">
+                <div className="mt-5 rounded-2xl bg-muted/70 p-4">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Risk score</span>
                     <span className="font-semibold">34 / 100</span>
                   </div>
-                  <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-border">
-                    <div className="h-full w-[34%] rounded-full bg-gradient-to-r from-primary to-amber-400" />
+                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-background">
+                    <div className="h-full w-[34%] rounded-full bg-amber-500" />
                   </div>
                 </div>
 
@@ -267,7 +267,7 @@ export default function LandingPage() {
                   ].map((line) => (
                     <div
                       key={line}
-                      className="flex items-start gap-2.5 rounded-xl border bg-background px-3 py-2.5 text-sm"
+                      className="flex items-start gap-2.5 rounded-xl bg-muted/50 px-3.5 py-2.5 text-sm"
                     >
                       <Sparkles className="mt-0.5 size-3.5 shrink-0 text-primary" />
                       <span>{line}</span>
@@ -279,46 +279,11 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Dual audience */}
-        <section className="mx-auto w-full max-w-6xl px-4 pb-20">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Reveal>
-              <AudienceCard
-                icon={<PawPrint className="size-5" />}
-                eyebrow="For pet owners"
-                title="Peace of mind, between vet visits"
-                points={[
-                  "Instant AI screening from a photo",
-                  "Smart reminders for vaccines & meds",
-                  "An assistant that knows your pet's history",
-                ]}
-                href="/signup"
-                cta="Create owner account"
-              />
-            </Reveal>
-            <Reveal delay={0.1}>
-              <AudienceCard
-                icon={<Stethoscope className="size-5" />}
-                eyebrow="For clinics"
-                title="Modern records, fewer no-shows"
-                points={[
-                  "Unified patient EMR & scheduling",
-                  "AI-flagged cases surfaced to your team",
-                  "Simple invoicing and billing overview",
-                ]}
-                href="/signup"
-                cta="Create clinic account"
-                accent
-              />
-            </Reveal>
-          </div>
-        </section>
-
         {/* Pricing */}
-        <section id="pricing" className="scroll-mt-20 border-y bg-secondary/30">
-          <div className="mx-auto w-full max-w-6xl px-4 py-20">
+        <section id="pricing" className="scroll-mt-20 bg-muted/60">
+          <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
             <Reveal className="mx-auto mb-12 max-w-2xl text-center">
-              <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+              <p className="text-sm font-medium text-primary">
                 Pricing
               </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -334,14 +299,14 @@ export default function LandingPage() {
                 <Reveal key={plan.name} delay={i * 0.08}>
                   <div
                     className={
-                      "relative flex h-full flex-col rounded-3xl border p-7 transition-all " +
+                      "relative flex h-full flex-col rounded-3xl bg-card p-7 " +
                       (plan.highlight
-                        ? "border-primary/40 bg-card shadow-xl shadow-primary/10 lg:-translate-y-2"
-                        : "bg-card hover:border-primary/30")
+                        ? "shadow-soft-lg ring-2 ring-primary/40"
+                        : "shadow-soft ring-1 ring-foreground/[0.05]")
                     }
                   >
                     {plan.highlight && (
-                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow-lg shadow-primary/25">
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                         Most popular
                       </span>
                     )}
@@ -382,9 +347,9 @@ export default function LandingPage() {
         </section>
 
         {/* FAQ */}
-        <section className="mx-auto w-full max-w-3xl px-4 py-20">
+        <section className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
           <Reveal className="mb-10 text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+            <p className="text-sm font-medium text-primary">
               FAQ
             </p>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -394,10 +359,15 @@ export default function LandingPage() {
           <div className="flex flex-col gap-3">
             {FAQS.map((f, i) => (
               <Reveal key={f.q} delay={i * 0.06}>
-                <div className="rounded-2xl border bg-card p-6">
-                  <h3 className="font-semibold">{f.q}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
-                </div>
+                <details className="group rounded-2xl bg-card shadow-soft ring-1 ring-foreground/[0.05]">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl p-5 font-medium outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:p-6 [&::-webkit-details-marker]:hidden">
+                    {f.q}
+                    <ChevronDown className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+                  </summary>
+                  <p className="-mt-1 px-5 pb-5 text-sm leading-relaxed text-muted-foreground sm:px-6 sm:pb-6">
+                    {f.a}
+                  </p>
+                </details>
               </Reveal>
             ))}
           </div>
@@ -406,8 +376,7 @@ export default function LandingPage() {
         {/* Final CTA */}
         <section className="mx-auto w-full max-w-6xl px-4 pb-24">
           <Reveal>
-            <div className="relative overflow-hidden rounded-3xl border border-transparent bg-gradient-to-br from-primary to-[#0c8f7e] px-6 py-16 text-center text-primary-foreground sm:px-12">
-              <div className="pointer-events-none absolute inset-0 [background-image:radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_55%)]" />
+            <div className="rounded-3xl bg-primary px-6 py-14 text-center text-primary-foreground sm:px-12 sm:py-16">
               <div className="relative">
                 <h2 className="mx-auto max-w-2xl text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
                   Give your pet a health twin today
@@ -427,7 +396,7 @@ export default function LandingPage() {
                     asChild
                     size="lg"
                     variant="outline"
-                    className="border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                    className="border-white/30 bg-transparent text-white shadow-none hover:bg-white/10 hover:text-white"
                   >
                     <Link href="/login">Sign in</Link>
                   </Button>
@@ -475,19 +444,17 @@ const FOOTER_LINKS: { heading: string; links: { label: string; href: string }[] 
 
 function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t bg-[#07120f] text-white">
-      {/* glow */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(45,212,191,0.12),transparent_60%)]" />
+    <footer className="border-t border-border/60 bg-background">
 
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-16">
-        <div className="grid gap-10 pb-14 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="mx-auto w-full max-w-6xl px-4 pt-14 sm:px-6">
+        <div className="grid grid-cols-2 gap-10 pb-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           {/* Brand */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2">
               <LogoMark className="size-8" />
               <span className="text-lg font-semibold tracking-tight">PawthCare</span>
             </div>
-            <p className="mt-4 max-w-xs text-sm text-white/60">
+            <p className="mt-4 max-w-xs text-sm text-muted-foreground">
               One living health record for every pet — AI screening, a smart
               assistant, and tools clinics actually want to use.
             </p>
@@ -496,7 +463,7 @@ function SiteFooter() {
           {/* Link columns */}
           {FOOTER_LINKS.map((col) => (
             <div key={col.heading}>
-              <p className="text-xs font-semibold uppercase tracking-widest text-white/40">
+              <p className="text-sm font-medium text-foreground">
                 {col.heading}
               </p>
               <ul className="mt-4 flex flex-col gap-3 text-sm">
@@ -504,7 +471,7 @@ function SiteFooter() {
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="text-white/65 transition-colors hover:text-white"
+                      className="text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {l.label}
                     </Link>
@@ -515,84 +482,11 @@ function SiteFooter() {
           ))}
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-3 border-t border-white/10 py-6 text-sm text-white/55 sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-border/60 py-6 text-sm text-muted-foreground sm:flex-row">
           <span>© {new Date().getFullYear()} PawthCare. All rights reserved.</span>
         </div>
       </div>
 
-      {/* Watermark */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex select-none justify-center overflow-hidden"
-      >
-        <span className="whitespace-nowrap bg-gradient-to-b from-white/[0.08] to-transparent bg-clip-text font-semibold leading-[0.78] tracking-tight text-transparent [font-size:15vw]">
-          PAWTHCARE
-        </span>
-      </div>
     </footer>
-  );
-}
-
-function AudienceCard({
-  icon,
-  eyebrow,
-  title,
-  points,
-  href,
-  cta,
-  accent,
-}: {
-  icon: React.ReactNode;
-  eyebrow: string;
-  title: string;
-  points: string[];
-  href: string;
-  cta: string;
-  accent?: boolean;
-}) {
-  return (
-    <div
-      className={
-        "flex h-full flex-col overflow-hidden rounded-3xl border p-8 " +
-        (accent
-          ? "border-transparent bg-gradient-to-br from-primary to-[#0c8f7e] text-primary-foreground"
-          : "bg-card")
-      }
-    >
-      <span
-        className={
-          "mb-4 flex size-11 items-center justify-center rounded-xl " +
-          (accent ? "bg-white/15" : "bg-primary/10 text-primary")
-        }
-      >
-        {icon}
-      </span>
-      <p
-        className={
-          "text-xs font-medium uppercase tracking-widest " +
-          (accent ? "text-primary-foreground/80" : "text-muted-foreground")
-        }
-      >
-        {eyebrow}
-      </p>
-      <h3 className="mt-1 text-2xl font-semibold tracking-tight">{title}</h3>
-      <ul className="mt-5 flex flex-1 flex-col gap-2.5 text-sm">
-        {points.map((p) => (
-          <li key={p} className="flex items-center gap-2">
-            <CalendarCheck
-              className={"size-4 shrink-0 " + (accent ? "" : "text-primary")}
-            />
-            {p}
-          </li>
-        ))}
-      </ul>
-      <Button
-        asChild
-        variant={accent ? "secondary" : "default"}
-        className="mt-7 w-fit"
-      >
-        <Link href={href}>{cta}</Link>
-      </Button>
-    </div>
   );
 }
