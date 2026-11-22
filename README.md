@@ -77,7 +77,3 @@ lib/             Auth, queries, AI config, helpers
 | `POST /api/ai/assistant` | Pet-specific assistant grounded in one pet's records |
 
 All routes are authenticated with role-based access. PawthCare's AI is a triage and education aid — not a substitute for a licensed veterinarian.
-
-## Deploy
-
-Deploys to [Vercel](https://vercel.com). Set the same env vars, point `DATABASE_URL` at production, and update `BETTER_AUTH_URL` to your deployed URL.
